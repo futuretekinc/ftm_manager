@@ -1,2 +1,2 @@
 # ftm_manager
-ftm_manager
+futuretek gateway manager
