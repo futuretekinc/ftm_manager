@@ -1,2 +1,2 @@
 #!/bin/sh
-arp-scan -I br-lan -l | awk '/'$1'/ { print $1 }'
+arp-scan -l | awk '/'$1'/ { print $1 }'
