@@ -10,7 +10,13 @@ $(document).ready(function(){
         var mac = document.getElementById("inputMac").value;
         mac = mac.replace(/ /gi, '');
         if (mac != '') {
-            loadData(mac);
+            
+            if (document.getElementById("row_" + mac)) {
+                alert("Already loaded");
+            } else {
+                loadData(mac);
+            }
+
         } else {
             alert("Please Mac Address");
         }
