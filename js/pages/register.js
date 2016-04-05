@@ -8,8 +8,12 @@ $(document).ready(function(){
     // 검색 버튼
     $("#btn_search").click(function(){
         var mac = document.getElementById("inputMac").value;
-        console.log(mac);
-        loadData(mac);
+        mac = mac.replace(/ /gi, '');
+        if (mac != '') {
+            loadData(mac);
+        } else {
+            alert("Please Mac Address");
+        }
     });
 });
 function loadData (_mac) {
@@ -20,13 +24,21 @@ function loadData (_mac) {
         //url:"../js/pages/network.xml",
         dataType:"xml",
         success : function(xml) {
-            var tbody = makePanel(_mac);
-
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
+            var idx=0;
             $(xml).find("SENSOR").each(function(){
-                makeBody(tbody, $(this), $(this).find("MAC").text());
+                idx+=1;
             });
+            if (idx > 1) {
+                var tbody = makePanel(_mac);
+
+                // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
+                // TODO
+                $(xml).find("SENSOR").each(function(){
+                    makeBody(tbody, $(this), $(this).find("MAC").text());
+                });
+            } else {
+                alert("Please Mac Address");
+            }
         },
         error : function(xhr, status, error) {
             //alert("에러발생");
