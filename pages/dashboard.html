@@ -52,18 +52,47 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
+                            <a href="dashboard.html"><i class="fa fa-table fa-fw"></i> SensorNodes</a>
+                        </li>
+                        <!-- <li>
+                            <a href="dashboard/favorite.html"><i class="fa fa-table fa-fw"></i> Favorite</a>
+                        </li> -->
+                        <li>
+                            <a href="#"><i class="fa fa-wrench fa-fw"></i> Rule<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="dashboard/trigger.html">Trigger</a>
+                                </li>
+                                <li>
+                                    <a href="dashboard/action.html">Action</a>
+                                </li>
+                                <li>
+                                    <a href="dashboard/trigger_action.html">Rule</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+
+            <!-- 왼쪽 사이드바 -->
+            <!-- <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li>
                             <a href="dashboard.html">SensorNodes</a>
                         </li>
                         <li>
                             <a href="dashboard/favorite.html">Favorite</a>
                         </li>
                         <li>
-                            <a href="#">Rule</a>
+                            <a href="dashboard/rule.html">Rule</a>
                         </li>
                     </ul>
                 </div>
-                <!-- /.sidebar-collapse -->
-            </div>
+            </div> -->
         <!--</div>-->
         </nav>
 
@@ -88,12 +117,10 @@
                         <thead>
                         <tr>
                             <th class="col-md-1">Index</th>
-                            <th class="col-md-2">ID</th>
-                            <th class="col-md-2">Name</th>
                             <th class="col-md-2">Type</th>
-                            <th class="col-md-2">Value</th>
+                            <th class="col-md-2">Name</th>
                             <th class="col-md-3">Time</th>
-                            <th class="col-md-2">State</th>
+                            <th class="col-md-2">Value</th>
                         </tr>
                         </thead>
                         <tbody id="modal_tbody">

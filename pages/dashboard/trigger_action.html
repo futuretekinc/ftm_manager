@@ -42,7 +42,7 @@
                 <a class="navbar-brand" href="../dashboard.html">FTM Manager System</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="active"><a href="favorite.html">Dashboard</a></li>
+                <li class="active"><a href="rule.html">Rule</a></li>
                 <li><a href="../sensors.html">Sensors</a></li>
                 <li><a href="../clouds.html">Clouds</a></li>
                 <li><a href="../network.html">Network</a></li>
@@ -56,9 +56,9 @@
                         <li>
                             <a href="../dashboard.html"><i class="fa fa-table fa-fw"></i> SensorNodes</a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="favorite.html"><i class="fa fa-table fa-fw"></i> Favorite</a>
-                        </li>
+                        </li> -->
                         <li>
                             <a href="#"><i class="fa fa-wrench fa-fw"></i> Rule<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
@@ -100,6 +100,10 @@
 
         <div id="page-wrapper">
             <br>
+            <div>
+                <button type="button" class="btn btn-primary" id="btn_rule_add">Add</button>
+            </div>
+            <br>
             <!-- /.row -->
 
         </div>
@@ -107,47 +111,68 @@
     </div>
     <!-- /#wrapper -->
 
-    <!-- 리스트를 위한 Modal -->
-    <div class="modal fade" id="myModal">
+    <!-- 트리거 config -->
+    <div class="modal fade" id="modal_rule_config">
         <div class="modal-dialog">
-            <div class="modal-content" style="width: 800px">
+            <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modal_title">00000000000</h4>
+                    <h4 class="modal-title" id="modal_rule_title">00000000000</h4>
                 </div>
-                <div class="modal-body form-inline" id="modal_body">
-                    <!--<label for="sensor_name">Name : </label>-->
-                    <!--<input type="text" class="form-control" id="sensor_name" style="width: 90%">-->
-                    <table class="table" id="modal_table">
-                        <thead>
-                        <tr>
-                            <th class="col-md-1">Index</th>
-                            <th class="col-md-2">ID</th>
-                            <th class="col-md-2">Name</th>
-                            <th class="col-md-2">Type</th>
-                            <th class="col-md-2">Value</th>
-                            <th class="col-md-3">Time</th>
-                            <th class="col-md-2">State</th>
-                        </tr>
-                        </thead>
-                        <tbody id="modal_tbody">
-                        </tbody>
-                    </table>
+                <div class="modal-body">
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="rule_name" class="col-sm-2 control-label">Name</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="rule_name">
+                            </div>
+                        </div>
+                        <!-- <div class="form-group">
+                            <label for="rule_value" class="col-sm-2 control-label">Value</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="rule_value">
+                            </div>
+                        </div> -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="modal_btn_rule_modify">Modify</button>
+                    <button type="button" class="btn btn-danger" id="modal_btn_rule_delete">Delete</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
 
-    <!-- 그래프를 위한 Modal -->
-    <div class="modal fade" id="myModalGraph">
+    <!-- 룰 추가 -->
+    <div class="modal fade" id="modal_rule_add">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="modalgraph_title">000000000000</h4>
+                    <h4 class="modal-title" id="modal_rule_add_title">Add rule</h4>
                 </div>
                 <div class="modal-body">
-                    <div id="myfirstchart" style="height: 250px;"></div>
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="add_trigger" class="col-sm-2 control-label">Trigger</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="add_trigger">
+                                    
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="add_action" class="col-sm-2 control-label">Action</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="add_action">
+                                    
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="modal_btn_rule_add">Add</button>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -163,6 +188,6 @@
     <script src="../../bower_components/morrisjs/morris.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
-    <script src="../../js/pages/favorite.js"></script>
+    <script src="../../js/pages/trigger_action.js"></script>
 </body>
 </html>

@@ -4,8 +4,6 @@
 
 $(document).ready(function(){
     loadSensorList();
-    //asyncEps();
-    setInterval("asyncEps()", 5000);
 });
 
 function loadSensorList () {

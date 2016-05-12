@@ -5,26 +5,24 @@ $(document).ready(function(){
     loadData();
 });
 function loadData () {
-    $.ajax({
+    $.ajax ({
         type:"get",
-        url:"/cgi-bin/sensor?cmd=sensinglist",
-        //url:"../js/pages/network.xml",
-        dataType:"xml",
-        success : function(xml) {
+        url:"/cgi-bin/ep?cmd=list&field1=all",
+        async:false,
+        dataType:"json",
+        success:response_list
+    });
+}
 
+function response_list(json) {
+    console.log(json);
+    var eps = json.eps;
+    var eps_count = json.length;
 
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("SENSOR").each(function(){
-                //console.log($(this), $(this).find("MAC").text());
-                var tbody = makePanel($(this).find("MAC").text());
-                makeBody(tbody, $(this), $(this).find("MAC").text());
-            });
-        },
-        error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
-        }
+    $.each(eps, function(key){
+        console.log("epid :", eps[key].epid, "type :", eps[key].type, "name :", eps[key].name, "unit :", eps[key].unit, "interval :", eps[key].interval, "did :", eps[key].did, "limit_type :", eps[key].limit.type, "limit_count :", eps[key].limit.count);
+        var tbody = makePanel(eps[key].did);
+        makeBody(tbody, eps[key]);
     });
 }
 
@@ -50,23 +48,32 @@ function makePanel(_mac) {
     // 패널 헤더
     var panel_header = document.createElement("div");
     panel_header.setAttribute("class", "panel-heading");
-    panel_header.innerHTML = _mac;
+    panel_header.innerHTML = _mac +  " ";
 
-    //var panel_close_div = document.createElement("div");
-    //panel_close_div.setAttribute("class", "pull-right");
-    //var panel_close_btn = document.createElement("button");
-    //panel_close_btn.setAttribute("class", "btn btn-danger btn-xs");
-    //panel_close_btn.setAttribute("type", "button");
-    //panel_close_btn.appendChild(document.createTextNode("X"));
-    //panel_close_btn.addEventListener("click", function(){
-    //    var parent_row = row.parentNode;
-    //    parent_row.removeChild(row);
-    //    row = null;
-    //    removeSensorNode();
-    //});
+    // 헤더에 수정 버튼 생성
+    var btn_modify = document.createElement("button");
+    btn_modify.setAttribute("class", "btn btn-default btn-xs");
+    btn_modify.setAttribute("type", "button");
+    btn_modify.setAttribute("id", "btn_" + _mac);
 
-    //panel_close_div.appendChild(panel_close_btn);
-    //panel_header.appendChild(panel_close_div);
+    // 버튼의 설정 아이콘 생성.
+    var span = document.createElement("span");
+    span.setAttribute("class", "glyphicon glyphicon-cog");
+
+    btn_modify.appendChild(span);
+    btn_modify.addEventListener("click", function(){
+
+        $.ajax ({
+            type:"get",
+            url:"/cgi-bin/node?cmd=get&did=" + _mac,
+            async:false,
+            dataType:"json",
+            success:response_node_info
+        });
+        console.log(this.id);
+    });
+    panel_header.appendChild(btn_modify);
+
 
     //패널 안에 센서 리스트들 테이블로 구성
     var table = document.createElement("table");
@@ -76,11 +83,17 @@ function makePanel(_mac) {
     var thead_tr = document.createElement("tr");
     thead.appendChild(thead_tr);
 
-    thead_tr.appendChild(document.createElement("th")).innerHTML = "ID";
-    thead_tr.appendChild(document.createElement("th")).innerHTML = "Name";
-    thead_tr.appendChild(document.createElement("th")).innerHTML = "Type";
-    thead_tr.appendChild(document.createElement("th")).innerHTML = "Modify";
+    var thNames = ["epid", "type", "name", "unit", "interval", "modify"];
+    //var className = ["col-sm-1", "col-sm-2", "col-sm-2", "col-sm-2", "col-sm-1", "col-sm-1"];
+
+    for (var i=0; i<thNames.length; i++) {
+        var th = document.createElement("th");
+        //th.setAttribute("class", className[i]);
+        thead_tr.appendChild(th).innerHTML = thNames[i];
+    }
+
     table.appendChild(thead);
+
 
     var tbody = document.createElement("tbody");
     tbody.setAttribute("id", "tbody_" + _mac);
@@ -96,142 +109,105 @@ function makePanel(_mac) {
     return tbody;
 }
 
-function makeBody(_tbody, _item, _mac) {
+function response_node_info(json) {
+    document.getElementById("modal_node_title").innerHTML = json.did;
+    document.getElementById("node_location").value = json.location;
+    document.getElementById("node_interval").value = json.interval;
+    document.getElementById("node_type").value = json.type;
+    document.getElementById("node_timeout").value = json.timeout;
+    document.getElementById("node_url").value = json.snmp.url;
+    $("#modal_node_config").modal();
+}
+
+function makeBody(_tbody, _eps) {
 
     var tbody_tr = document.createElement("tr");
     _tbody.appendChild(tbody_tr);
 
-    tbody_tr.appendChild(document.createElement("th")).innerHTML = _item.find("ID").text();
-    tbody_tr.setAttribute("id", "tr_" + _mac.replace(/"/g, "") + "_" + _item.find("ID").text().replace(/"/g, ""));
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.epid;
+    tbody_tr.setAttribute("id", "tr_" + _eps.epid);
 
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _item.find("NAME").text();
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _item.find("TYPE").text();
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.interval;
 
     var btn_modify = document.createElement("button");
     btn_modify.setAttribute("class", "btn btn-danger btn-xs");
     btn_modify.setAttribute("type", "button");
-    btn_modify.setAttribute("id", "btn_" + _item.find("ID").text());
+    btn_modify.setAttribute("id", "btn_" + _eps.epid);
     btn_modify.appendChild(document.createTextNode("Modify"));
     btn_modify.addEventListener("click", function(){
         console.log(this.id);
-        document.getElementById("modal_title").innerHTML = _item.find("MAC").text() + " - " + _item.find("ID").text();
-        document.getElementById("sensor_name").value = _item.find("NAME").text();
-        $("#myModal").modal();
+        document.getElementById("modal_sensor_title").innerHTML = _eps.did + " - " + _eps.epid;
+        document.getElementById("sensor_name").value = _eps.name;
+        $("#modal_sensor_config").modal();
     });
     tbody_tr.appendChild(document.createElement("th")).appendChild(btn_modify);
 }
 
-$("#modal_btn_delete").click(function(){
+$("#modal_btn_sensor_delete").click(function(){
     removeSensor();
-    $("#myModal").modal("hide");
+    $("#modal_sensor_config").modal("hide");
 });
 
-$("#modal_btn_modify").click(function(){
+$("#modal_btn_sensor_modify").click(function(){
     modifySensor();
-    $("#myModal").modal("hide");
+    $("#modal_sensor_config").modal("hide");
 });
 
 function modifySensor() {
-    // db 수정
+    
+    // 센서의 이름을 수정할 수 있다.
+    var epid = document.getElementById("modal_sensor_title").innerHTML.substr(15);
+    console.log("epid =", epid);
 
-    // 리스트에서 수정
-    var mac = document.getElementById("modal_title").innerHTML.substr(0, 17);
-    var id = document.getElementById("modal_title").innerHTML.substr(20);
+    var tr = document.getElementById("tr_" + epid);
+    console.log(tr);
+    var name_td = tr.childNodes.item(2);
+    console.log(name_td);
+    name_td.innerHTML = document.getElementById("sensor_name").value;
+	console.log("name_td.innerHTML =", name_td.innerHTML);
 
-    var tr = document.getElementById("tr_" + mac + "_" + id);
-    //console.log(tr);
-    var td = tr.childNodes.item(1);
-    //console.log(td);
-    td.innerHTML = document.getElementById("sensor_name").value;
-	
-	console.log(document.getElementById("sensor_name").value);
-    $.ajax({
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/ep?cmd=set&epid=" + epid + "&name=" + name_td.innerHTML,
         async:false,
-        type:"post",
-        url:"/cgi-bin/sensor?cmd=name_modify&mac=" + mac + "&id=" + id + "&name=" + document.getElementById("sensor_name").value,
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("SENSOR_ADDED").each(function(){
-                console.log($(this).find("RET").text());
-
-                if ($(this).find("RET").text() == "OK") {
-                    alert("MODIFY SENSOR NAME");
-                }
-            });
-        },
-        error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+        dataType:"json",
+        success: function (json) {
+            console.log(json.result);
+            if (json.result == "success") {
+                alert("success");
+            } else {
+                alert("failed");
+            }
         }
     });
 }
 
-function delSensorList() {
-
-    console.log("센서 삭제");
-
-    $.each (sensors, function (index, value){
-        var mac = value.substr(3, 17);
-        var id = value.substr(21);
-        console.log(index, mac, id);
-
-        $.ajax({
-            async:false,
-            type:"post",
-            url:"/cgi-bin/sensor?cmd=set&mac=" + mac + "&id=" + id,
-            //url:"../js/pages/network.xml",
-            dataType:"xml",
-            success : function(xml) {
-                // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-                // TODO
-                $(xml).find("SENSOR_ADDED").each(function(){
-                    console.log($(this).find("RET").text());
-                    removeList(mac, id);
-                    if (sensors.length == index + 1) {
-                        alert("SAVE SENSOR");
-                    }
-                });
-            },
-            error : function(xhr, status, error) {
-                //alert("에러발생");
-                window.location.href="/";
-            }
-        });
-    });
-    sensors = [];
-}
-
 function removeSensor() {
-    // db에서 삭제
-    var mac = document.getElementById("modal_title").innerHTML.substr(0, 17);
-    var id = document.getElementById("modal_title").innerHTML.substr(20);
+    
+    // 센서의 삭제할 수 있다.
+    var epid = document.getElementById("modal_sensor_title").innerHTML.substr(15);
+    console.log("epid =", epid);
 
-    $.ajax({
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/ep?cmd=del&epid=" + epid,
         async:false,
-        type:"post",
-        url:"/cgi-bin/sensor?cmd=delete&mac=" + mac + "&id=" + id,
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("SENSOR_ADDED").each(function(){
-                console.log($(this).find("RET").text());
-
-                if ($(this).find("RET").text() == "OK") {
-                    alert("DELETE SENSOR");
-                }
-            });
-        },
-        error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+        dataType:"json",
+        success: function (json) {
+            console.log(json.result);
+            if (json.result == "success") {
+                alert("success");
+            } else {
+                alert("failed");
+            }
         }
     });
 
     // 리스트에서 삭제
-    var tr = document.getElementById("tr_" + mac + "_" + id);
+    var tr = document.getElementById("tr_" + epid);
     console.log(tr);
     var tr_parent = tr.parentNode;
     tr_parent.removeChild(tr);
@@ -240,4 +216,58 @@ function removeSensor() {
 
 function removeSensorNode() {
     // db에서 삭제
+}
+
+$("#modal_btn_node_delete").click(function(){
+    removeNode();
+    $("#modal_node_config").modal("hide");
+});
+
+$("#modal_btn_node_modify").click(function(){
+    modifyNode();
+    $("#modal_node_config").modal("hide");
+});
+
+function removeNode() {
+    var did = document.getElementById("modal_node_title").innerHTML;
+    var location = document.getElementById("node_location").value;
+    var interval = document.getElementById("node_interval").value;
+    console.log(did);
+
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/node?cmd=del&did=" + did,
+        async:false,
+        dataType:"json",
+        success: function (json) {
+            console.log(json.result);
+            if (json.result == "success") {
+                alert("success");
+            } else {
+                alert("failed");
+            }
+        }
+    });
+}
+
+function modifyNode() {
+    var did = document.getElementById("modal_node_title").innerHTML;
+    var location = document.getElementById("node_location").value;
+    var interval = document.getElementById("node_interval").value;
+    console.log(did);
+
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/node?cmd=set&did=" + did + "&location=" + location + "&interval=" + interval,
+        async:false,
+        dataType:"json",
+        success: function (json) {
+            console.log(json.result);
+            if (json.result == "success") {
+                alert("success");
+            } else {
+                alert("failed");
+            }
+        }
+    });
 }
