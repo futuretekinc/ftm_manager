@@ -4,7 +4,7 @@
 
 $(document).ready(function(){
     loadSensorList();
-    //asyncEps();
+    asyncEps();
     setInterval("asyncEps()", 5000);
 });
 
@@ -92,7 +92,7 @@ function makePanel(_mac) {
     thead.appendChild(thead_tr);
 
     //var thNames = ["<span class='glyphicon glyphicon-star' aria-hidden='true'></span>", "epid", "type", "name", "unit", "interval"];
-    var thNames = ["epid", "type", "name", "unit", "interval", "time", "value", "list"];
+    var thNames = ["epid", "type", "name", "interval", "time", "value", "unit", "state", "list"];
     //var className = ["col-md-1", "col-md-1", "col-md-2", "col-md-2", "col-md-1", "col-md-3", "col-md-2", "col-md-2"];
 
     for (var i=0; i<thNames.length; i++) {
@@ -123,14 +123,17 @@ function makeBody(_tbody, _eps) {
 
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.epid;
     tbody_tr.setAttribute("id", "tr_" + _eps.epid);
-
+    if (_eps.state == "stop") {
+        tbody_tr.setAttribute("class", "danger");
+    }
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.interval;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = "";
     tbody_tr.appendChild(document.createElement("td")).innerHTML = "";
-    
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.state;
+
     var btn_list = document.createElement("button");
     btn_list.setAttribute("class", "btn btn-info btn-xs");
     btn_list.setAttribute("type", "button");
@@ -202,7 +205,7 @@ function makeBody(_tbody, _eps) {
 function asyncEps() {
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/ep?cmd=list",
+        url:"/cgi-bin/ep?cmd=list&field1=all",
         async:false,
         dataType:"json",
         success:getAsyncEps
@@ -213,7 +216,9 @@ function getAsyncEps(json) {
     var eps = json.eps;
     $.each(eps, function(key){
         console.log(eps[key].epid);
-        loadAsyncEps(eps[key].epid);
+        if (eps[key].state != "stop") {
+            loadAsyncEps(eps[key].epid);
+        }
     });
 }
 
@@ -233,8 +238,8 @@ function loadAsyncEps(epid) {
                 console.log(epid, value, time);
                 
                 var tr = document.getElementById("tr_" + epid);
-                var time_td = tr.cells[5];
-                var value_td = tr.cells[6];
+                var time_td = tr.cells[4];
+                var value_td = tr.cells[5];
 
                 time_td.innerHTML = time;
                 value_td.innerHTML = value;
@@ -245,7 +250,7 @@ function loadAsyncEps(epid) {
     });
 }
 
-function onCheckboxClicked() {
+/*function onCheckboxClicked() {
     // 체크의 여부에 따라 Favorite에 등록 및 제거를 한다.
     //console.log(this.id, this.checked);
     var mac = this.id.substr(3, 17);
@@ -278,7 +283,7 @@ function onCheckboxClicked() {
             window.location.href="/";
         }
     });
-}
+}*/
 
 function modifySensor() {
     // db 수정
@@ -362,7 +367,7 @@ function removeSensor() {
     tr = null;
 }
 
-$('#myModalGraph').on('shown.bs.modal', function () {
+/*$('#myModalGraph').on('shown.bs.modal', function () {
     $( "#myfirstchart" ).empty();
     new Morris.Line({
         // ID of the element in which to draw the chart.
@@ -379,4 +384,4 @@ $('#myModalGraph').on('shown.bs.modal', function () {
         // chart.
         labels: ['Value']
     });
-});
+});*/

@@ -200,6 +200,7 @@ function removeSensor() {
             console.log(json.result);
             if (json.result == "success") {
                 alert("success");
+                window.location.reload();
             } else {
                 alert("failed");
             }
