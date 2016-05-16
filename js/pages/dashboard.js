@@ -92,7 +92,7 @@ function makePanel(_mac) {
     thead.appendChild(thead_tr);
 
     //var thNames = ["<span class='glyphicon glyphicon-star' aria-hidden='true'></span>", "epid", "type", "name", "unit", "interval"];
-    var thNames = ["epid", "type", "name", "interval", "time", "value", "unit", "state", "list"];
+    var thNames = ["epid", "type", "name", "interval", "time", "value", "state", "list"];
     //var className = ["col-md-1", "col-md-1", "col-md-2", "col-md-2", "col-md-1", "col-md-3", "col-md-2", "col-md-2"];
 
     for (var i=0; i<thNames.length; i++) {
@@ -130,8 +130,8 @@ function makeBody(_tbody, _eps) {
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.interval;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = "";
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = "";
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = " " + _eps.unit;
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.state;
 
     var btn_list = document.createElement("button");
@@ -157,16 +157,16 @@ function makeBody(_tbody, _eps) {
                 for (var i=0; i<values.length; i++) {
                     var modal_tr = document.createElement("tr");
                     modal_tr.appendChild(document.createElement("td")).innerHTML = i + 1;
-                    modal_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
-                    modal_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
+                    //modal_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
+                    //modal_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
                     modal_tr.appendChild(document.createElement("td")).innerHTML = values[i].time;
-                    modal_tr.appendChild(document.createElement("td")).innerHTML = values[i].value;
+                    modal_tr.appendChild(document.createElement("td")).innerHTML = values[i].value + " " + _eps.unit;
                     modal_tbody.appendChild(modal_tr);
                 }
             }
         });
 
-        document.getElementById("modal_title").innerHTML = _eps.epid;
+        document.getElementById("modal_title").innerHTML = _eps.name;
         $("#myModal").modal();
     });
     tbody_tr.appendChild(document.createElement("td")).appendChild(btn_list);
@@ -240,9 +240,9 @@ function loadAsyncEps(epid) {
                 var tr = document.getElementById("tr_" + epid);
                 var time_td = tr.cells[4];
                 var value_td = tr.cells[5];
-
+                //console.log(value_td.innerHTML.split(' ')[1]);
                 time_td.innerHTML = time;
-                value_td.innerHTML = value;
+                value_td.innerHTML = value + " " + value_td.innerHTML.split(' ')[1];
             } else {
                 console.log("load fail");
             }
@@ -285,87 +285,87 @@ function loadAsyncEps(epid) {
     });
 }*/
 
-function modifySensor() {
-    // db 수정
+// function modifySensor() {
+//     // db 수정
 
-    // 리스트에서 수정
-    var id = document.getElementById("modal_title").innerHTML;
-    var tr = document.getElementById("tr_" + id);
-    console.log(tr);
-    var td = tr.childNodes.item(1);
-    console.log(td);
-    td.innerHTML = document.getElementById("sensor_name").value;
-}
+//     // 리스트에서 수정
+//     var id = document.getElementById("modal_title").innerHTML;
+//     var tr = document.getElementById("tr_" + id);
+//     console.log(tr);
+//     var td = tr.childNodes.item(1);
+//     console.log(td);
+//     td.innerHTML = document.getElementById("sensor_name").value;
+// }
 
-function delSensorList() {
+// function delSensorList() {
 
-    console.log("센서 삭제");
+//     console.log("센서 삭제");
 
-    $.each (sensors, function (index, value){
-        var mac = value.substr(3, 17);
-        var id = value.substr(21);
-        console.log(index, mac, id);
+//     $.each (sensors, function (index, value){
+//         var mac = value.substr(3, 17);
+//         var id = value.substr(21);
+//         console.log(index, mac, id);
 
-        $.ajax({
-            async:false,
-            type:"post",
-            url:"/cgi-bin/sensor?cmd=set&mac=" + mac + "&id=" + id,
-            //url:"../js/pages/network.xml",
-            dataType:"xml",
-            success : function(xml) {
-                // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-                // TODO
-                $(xml).find("SENSOR_ADDED").each(function(){
-                    console.log($(this).find("RET").text());
-                    removeList(mac, id);
-                    if (sensors.length == index + 1) {
-                        alert("SAVE SENSOR");
-                    }
-                });
-            },
-            error : function(xhr, status, error) {
-                //alert("에러발생");
-                window.location.href="/";
-            }
-        });
-    });
-    sensors = [];
-}
+//         $.ajax({
+//             async:false,
+//             type:"post",
+//             url:"/cgi-bin/sensor?cmd=set&mac=" + mac + "&id=" + id,
+//             //url:"../js/pages/network.xml",
+//             dataType:"xml",
+//             success : function(xml) {
+//                 // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
+//                 // TODO
+//                 $(xml).find("SENSOR_ADDED").each(function(){
+//                     console.log($(this).find("RET").text());
+//                     removeList(mac, id);
+//                     if (sensors.length == index + 1) {
+//                         alert("SAVE SENSOR");
+//                     }
+//                 });
+//             },
+//             error : function(xhr, status, error) {
+//                 //alert("에러발생");
+//                 window.location.href="/";
+//             }
+//         });
+//     });
+//     sensors = [];
+// }
 
-function removeSensor() {
-    // db에서 삭제
-    var mac = document.getElementById("modal_title").innerHTML.substr(0, 17);
-    var id = document.getElementById("modal_title").innerHTML.substr(20);
+// function removeSensor() {
+//     // db에서 삭제
+//     var mac = document.getElementById("modal_title").innerHTML.substr(0, 17);
+//     var id = document.getElementById("modal_title").innerHTML.substr(20);
 
-    $.ajax({
-        async:false,
-        type:"post",
-        url:"/cgi-bin/sensor?cmd=delete&mac=" + mac + "&id=" + id,
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("SENSOR_ADDED").each(function(){
-                console.log($(this).find("RET").text());
+//     $.ajax({
+//         async:false,
+//         type:"post",
+//         url:"/cgi-bin/sensor?cmd=delete&mac=" + mac + "&id=" + id,
+//         dataType:"xml",
+//         success : function(xml) {
+//             // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
+//             // TODO
+//             $(xml).find("SENSOR_ADDED").each(function(){
+//                 console.log($(this).find("RET").text());
 
-                if ($(this).find("RET").text() == "OK") {
-                    alert("DELETE SENSOR");
-                }
-            });
-        },
-        error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
-        }
-    });
+//                 if ($(this).find("RET").text() == "OK") {
+//                     alert("DELETE SENSOR");
+//                 }
+//             });
+//         },
+//         error : function(xhr, status, error) {
+//             //alert("에러발생");
+//             window.location.href="/";
+//         }
+//     });
 
-    // 리스트에서 삭제
-    var tr = document.getElementById("tr_" + mac + "_" + id);
-    console.log(tr);
-    var tr_parent = tr.parentNode;
-    tr_parent.removeChild(tr);
-    tr = null;
-}
+//     // 리스트에서 삭제
+//     var tr = document.getElementById("tr_" + mac + "_" + id);
+//     console.log(tr);
+//     var tr_parent = tr.parentNode;
+//     tr_parent.removeChild(tr);
+//     tr = null;
+// }
 
 /*$('#myModalGraph').on('shown.bs.modal', function () {
     $( "#myfirstchart" ).empty();
