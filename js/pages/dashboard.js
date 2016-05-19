@@ -92,7 +92,7 @@ function makePanel(_mac) {
     thead.appendChild(thead_tr);
 
     //var thNames = ["<span class='glyphicon glyphicon-star' aria-hidden='true'></span>", "epid", "type", "name", "unit", "interval"];
-    var thNames = ["epid", "type", "name", "interval", "time", "value", "state", "list"];
+    var thNames = [ "name", "type", "interval", "time", "value", "state", "list"];
     //var className = ["col-md-1", "col-md-1", "col-md-2", "col-md-2", "col-md-1", "col-md-3", "col-md-2", "col-md-2"];
 
     for (var i=0; i<thNames.length; i++) {
@@ -100,6 +100,7 @@ function makePanel(_mac) {
         //th.setAttribute("class", className[i]);
         thead_tr.appendChild(th).innerHTML = thNames[i];
     }
+
     table.appendChild(thead);
 
     var tbody = document.createElement("tbody");
@@ -121,13 +122,13 @@ function makeBody(_tbody, _eps) {
     var tbody_tr = document.createElement("tr");
     _tbody.appendChild(tbody_tr);
 
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.epid;
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.epid;
     tbody_tr.setAttribute("id", "tr_" + _eps.epid);
     if (_eps.state == "stop") {
         tbody_tr.setAttribute("class", "danger");
     }
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.interval;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = "";
     tbody_tr.appendChild(document.createElement("td")).innerHTML = " " + _eps.unit;
@@ -232,17 +233,19 @@ function loadAsyncEps(epid) {
             var result = json.result;
             if (result == "success") {
                 var data = json.data;
-                var epid = json.epid;
-                var time = data[0].time;
-                var value = data[0].value;
-                console.log(epid, value, time);
-                
-                var tr = document.getElementById("tr_" + epid);
-                var time_td = tr.cells[4];
-                var value_td = tr.cells[5];
-                //console.log(value_td.innerHTML.split(' ')[1]);
-                time_td.innerHTML = time;
-                value_td.innerHTML = value + " " + value_td.innerHTML.split(' ')[1];
+                if (data.length > 0) {
+                    var epid = json.epid;
+                    var time = data[0].time;
+                    var value = data[0].value;
+                    console.log(epid, value, time);
+                    
+                    var tr = document.getElementById("tr_" + epid);
+                    var time_td = tr.cells[3];
+                    var value_td = tr.cells[4];
+                    //console.log(value_td.innerHTML.split(' ')[1]);
+                    time_td.innerHTML = time;
+                    value_td.innerHTML = value + " " + value_td.innerHTML.split(' ')[1];
+                }
             } else {
                 console.log("load fail");
             }
