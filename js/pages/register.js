@@ -18,7 +18,7 @@ $(document).ready(function(){
             } else {
                 //loadData(mac);
                 $("#btn_search").button('loading');
-                startDiscovery(true);
+                startDiscovery(false);
                 //$("#btn_search").attr('disabled',true);
             }
 
@@ -30,7 +30,7 @@ $(document).ready(function(){
             } else {
                 //loadData(mac);
                 $("#btn_search").button('loading');
-                startDiscovery(false);
+                startDiscovery(true);
                 //$("#btn_search").attr('disabled',true);
             }
         }
@@ -107,7 +107,7 @@ function getEpsList(_isAll) {
                 var eps = [];
                 $.each(registed_eps, function(key){
                     var registed_epid = registed_eps[key].epid;
-                    //console.log(registed_epid);
+                    console.log("getEpsList epid = ", registed_epid);
                     eps.push(registed_epid);
                 });
                 getEps(eps, _isAll);
@@ -121,6 +121,7 @@ function getEpsList(_isAll) {
 function getEps(_eps, _isAll) {
     var mac = document.getElementById("inputMac").value;
     mac = mac.replace(/ /gi, '');
+    console.log("getEps() mac = ", mac);
 
     $.ajax ({
         type:"get",
@@ -137,12 +138,18 @@ function getEps(_eps, _isAll) {
                     var ep = eps[i].ep;
                     var did = ep.did;
                     var epid = ep.epid;
-                    // console.log("did =", epid);
+                    console.log("getEps() did =", did);
 
-                    if (mac.toLowerCase() == did.toLowerCase() && _isAll == false) {
-                        if(_eps.indexOf(epid.toLowerCase()) == -1) {
-                            var tbody = makePanel(did);
-                            makeBody(tbody, ep);
+                    //console.log("getEps() mac == did", mac.toLowerCase(), did.toLowerCase(), _isAll);
+                    console.log("getEps() epid.toLowerCase()", _eps, epid.toLowerCase());
+                    if (_isAll == false) {
+                        if (mac.toLowerCase() == did.toLowerCase()) {
+                            if(_eps.indexOf(epid.toLowerCase()) == -1) {
+                                var tbody = makePanel(did);
+                                makeBody(tbody, ep);
+                            }
+                        } else {
+                            console.log("맥으로 검색되는 센서가 없습니다.");
                         }
                     } else {
                         if(_eps.indexOf(epid.toLowerCase()) == -1) {
@@ -357,7 +364,7 @@ function makePanel(_mac) {
 }
 
 function makeBody(_tbody, _ep) {
-    console.log("_ep.epid =", _ep.epid);
+    //console.log("_ep.epid =", _ep.epid);
     if (document.getElementById("tr_" + _ep.epid)) {
         //console.log("있음");
         return;
