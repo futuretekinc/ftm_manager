@@ -17,6 +17,7 @@ $(document).ready(function(){
                 alert("Already loaded");
             } else {
                 //loadData(mac);
+                $("#btn_search").button('loading');
                 startDiscovery(true);
                 //$("#btn_search").attr('disabled',true);
             }
@@ -28,6 +29,7 @@ $(document).ready(function(){
                 alert("Already loaded");
             } else {
                 //loadData(mac);
+                $("#btn_search").button('loading');
                 startDiscovery(false);
                 //$("#btn_search").attr('disabled',true);
             }
@@ -48,6 +50,7 @@ function startDiscovery(_isAll) {
                 interval = setInterval( function() { getDiscoveryResult(_isAll); }, 1000);
                 //getEpsList(_isAll);
             } else {
+                $("#btn_search").button('reset');
                 alert("discovery failed");
             }
         }
@@ -65,26 +68,26 @@ function getDiscoveryResult(_isAll) {
             if (result == "success") {
                 var finished = json.finished;
                 if (finished == "true") {
-                    // 노드 리스트가져오기
+                    // 노드 리스트가져오기   
                     console.log("ready");
                     intervalCount = 0;
                     getEpsList(_isAll);
                     clearInterval(interval);
-                    $("#btn_search").attr('disabled',false);
+                    $("#btn_search").button('reset');
                 } else {
                     console.log("discovery ing..");
                     intervalCount++;
                     console.log(intervalCount);
-                    if (intervalCount > 15) {
+                    if (intervalCount > 10) {
                         intervalCount = 0;
                         clearInterval(interval);
                         alert("retry search..");
-                        $("#btn_search").attr('disabled',false);
+                        $("#btn_search").button('reset');
                     }
                 }
             } else {
                 alert("discovery failed");
-                $("#btn_search").attr('disabled',false);
+                $("#btn_search").button('reset');
             }
         }
     });
@@ -141,13 +144,11 @@ function getEps(_eps, _isAll) {
                             var tbody = makePanel(did);
                             makeBody(tbody, ep);
                         }
-                        $("#btn_search").attr('disabled',false);
                     } else {
                         if(_eps.indexOf(epid.toLowerCase()) == -1) {
                             var tbody = makePanel(did);
                             makeBody(tbody, ep);
                         }
-                        $("#btn_search").attr('disabled',false);
                     }
                 }
             } else {
