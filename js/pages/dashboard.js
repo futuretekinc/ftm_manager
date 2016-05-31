@@ -31,33 +31,6 @@ function response_list(json) {
     });
 }
 
-function loadData (_mac, _id, _favorite) {
-
-    $.ajax({
-        //async:false,
-        type:"get",
-        url:"/cgi-bin/sensor?cmd=dashboard&mac=" + _mac + "&id=" + _id,
-        //url:"../js/pages/network.xml",
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("SENSOR").each(function(){
-                //console.log($(this).find("MAC").text());
-                //arr.push($(this));
-                //console.log("Asdfasdfasdf");
-                var tbody = makePanel($(this).find("MAC").text());
-                //tbody.remove();
-                makeBody(tbody, $(this), $(this).find("MAC").text(), _favorite);
-            });
-        },
-        error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
-        }
-    });
-}
-
 function makePanel(_mac) {
 
     if (document.getElementById("row_" + _mac)) {
