@@ -171,7 +171,7 @@ function addSensorList() {
     console.log("getIsNode(did)", getIsNode(did));
     //return;
     if (!getIsNode(did)) {
-        console.log("!!!!!!!");
+        //console.log("!!!!!!!");
         //http://10.0.1.18/cgi-bin/node?cmd=add&type=snmp&version=1&url=10.0.1.148&community=futuretek&mib=fte.mib
         $.ajax ({
             type:"get",
@@ -187,7 +187,7 @@ function addSensorList() {
                         if (did.toLowerCase() == node.did.toLowerCase()) {
                             $.ajax ({
                                 type:"get",
-                                url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=" + node.snmp.mib,
+                                url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=fte.mib",// + node.snmp.mib,
                                 async:false,
                                 dataType:"json",
                                 success:function(json) {
@@ -213,6 +213,8 @@ function addSensorList() {
         var epid = value.substr(3).toLowerCase();
         var type = document.getElementById("tr_" + value.substr(3)).cells[2].innerHTML;
         console.log(did, type, epid);
+
+        if (type == "DIGITAL INPUT") { type = "di"; }
 
         $.ajax ({
             type:"get",
@@ -250,14 +252,18 @@ function getIsNode(_did) {
             console.log(result);
             if (result == "success") {
                 var savedNodes = json.nodes;
-                for (var i=0; i<savedNodes.length; i++) {
-                    var node = savedNodes[i].did;
-                    if (node.toLowerCase() == _did.toLowerCase()) {
-                        isnode = true;
-                        break;
-                    } else {
-                        isnode = false;
+                if (savedNodes.length > 0) {
+                    for (var i=0; i<savedNodes.length; i++) {
+                        var node = savedNodes[i].did;
+                        if (node.toLowerCase() == _did.toLowerCase()) {
+                            isnode = true;
+                            break;
+                        } else {
+                            isnode = false;
+                        }
                     }
+                } else {
+                    isnode = false;
                 }
             } else {
                 
@@ -369,6 +375,8 @@ function makeBody(_tbody, _ep) {
         //console.log("있음");
         return;
     }
+
+    if (_ep.type == "MULTI-FUNCTION") { return; }
 
     var tbody_tr = document.createElement("tr");
     _tbody.appendChild(tbody_tr);
