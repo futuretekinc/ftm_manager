@@ -305,7 +305,7 @@ $('#modal_btn_action_add').click(function(){
             
             if (json.result == "success") {
                 alert("success");
-               //window.location.reload();
+                window.location.reload();
             } else {
                 alert("fail");
             }

@@ -1,7 +1,28 @@
 /**
  * Created by kindmong on 2015-10-27.
  */
+function init() {
+    $.li18n.currentLocale = 'kr';
+    document.getElementById("menu_register").innerHTML = _t('register');
+    document.getElementById("menu_list").innerHTML = _t("list");
+    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
+    document.getElementById("menu_sensors").innerHTML = _t('sensors');
+    document.getElementById("menu_clouds").innerHTML = _t('clouds');
+    document.getElementById("menu_network").innerHTML = _t('network');
+    document.getElementById("menu_system").innerHTML = _t('system');
+
+    document.getElementById("label_type").innerHTML = _t('type');
+    document.getElementById("label_location").innerHTML = _t('location');
+    document.getElementById("label_interval").innerHTML = _t('interval');
+    document.getElementById("label_timeout").innerHTML = _t('timeout');
+    document.getElementById("label_url").innerHTML = _t('url');
+
+    document.getElementById("label_name").innerHTML = _t('name');
+    document.getElementById("label_state").innerHTML = _t('state');
+}
+
 $(document).ready(function(){
+    init();
     loadData();
 });
 function loadData () {
@@ -48,7 +69,17 @@ function makePanel(_mac) {
     // 패널 헤더
     var panel_header = document.createElement("div");
     panel_header.setAttribute("class", "panel-heading");
-    panel_header.innerHTML = _mac +  " ";
+    panel_header.setAttribute("style", "font-size:120%; font-weight: bold");
+
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/node?cmd=get&did=" + _mac,
+        async:false,
+        dataType:"json",
+        success:function (json) {
+            panel_header.innerHTML = json.location + " ";
+        }
+    });
 
     // 헤더에 수정 버튼 생성
     var btn_modify = document.createElement("button");
@@ -83,7 +114,7 @@ function makePanel(_mac) {
     var thead_tr = document.createElement("tr");
     thead.appendChild(thead_tr);
 
-    var thNames = ["epid", "type", "name", "unit", "interval", "modify"];
+    var thNames = [_t("name"), _t("state"), _t("type"), _t("interval"), _t("epid"), _t("modify")];
     //var className = ["col-sm-1", "col-sm-2", "col-sm-2", "col-sm-2", "col-sm-1", "col-sm-1"];
 
     for (var i=0; i<thNames.length; i++) {
@@ -122,25 +153,44 @@ function response_node_info(json) {
 function makeBody(_tbody, _eps) {
 
     var tbody_tr = document.createElement("tr");
+    tbody_tr.setAttribute("id", "tr_" + _eps.epid);
     _tbody.appendChild(tbody_tr);
 
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.epid;
-    tbody_tr.setAttribute("id", "tr_" + _eps.epid);
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
+
+
+    var state_icon = document.createElement("span");
+    state_icon.setAttribute("aria-hidden", "true");
+    if (_eps.state == "run") {
+        state_icon.setAttribute("style", "color:green; font-size:150%");
+        state_icon.setAttribute("class", "glyphicon glyphicon-ok-sign");
+    } else {
+        state_icon.setAttribute("style", "color:red; font-size:150%");
+        state_icon.setAttribute("class", "glyphicon glyphicon-remove-sign");
+    }
+    tbody_tr.appendChild(document.createElement("td")).appendChild(state_icon);
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.state;
+    
 
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.interval;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.epid;
 
     var btn_modify = document.createElement("button");
     btn_modify.setAttribute("class", "btn btn-danger btn-xs");
     btn_modify.setAttribute("type", "button");
     btn_modify.setAttribute("id", "btn_" + _eps.epid);
-    btn_modify.appendChild(document.createTextNode("Modify"));
+    btn_modify.appendChild(document.createTextNode(_t("modify")));
     btn_modify.addEventListener("click", function(){
         console.log(this.id);
         document.getElementById("modal_sensor_title").innerHTML = _eps.did + " - " + _eps.epid;
         document.getElementById("sensor_name").value = _eps.name;
+        if (_eps.state == "stop") {
+            document.getElementById("state").options[0].selected = true;
+        } else {
+            document.getElementById("state").options[1].selected = true;
+        }
         $("#modal_sensor_config").modal();
     });
     tbody_tr.appendChild(document.createElement("th")).appendChild(btn_modify);
@@ -165,19 +215,29 @@ function modifySensor() {
     var tr = document.getElementById("tr_" + epid);
     console.log(tr);
     var name_td = tr.childNodes.item(2);
-    console.log(name_td);
+    var state_td = tr.childNodes.item(5);
+    //console.log(name_td);
     name_td.innerHTML = document.getElementById("sensor_name").value;
-	console.log("name_td.innerHTML =", name_td.innerHTML);
+    state_td.innerHTML = document.getElementById("state").value;
+	//console.log("name_td.innerHTML =", name_td.innerHTML, document.getElementById("state").selectedIndex);
+    
+    var state;
+    if (document.getElementById("state").value == "stop") {
+        state = false;
+    } else {
+        state = true;
+    }
 
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/ep?cmd=set&epid=" + epid + "&name=" + name_td.innerHTML,
+        url:"/cgi-bin/ep?cmd=set&epid=" + epid + "&name=" + name_td.innerHTML + "&enable=" + state,
         async:false,
         dataType:"json",
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
                 console.log("success");
+                window.location.reload();
             } else {
                 alert("failed");
             }
@@ -243,7 +303,7 @@ function removeNode() {
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
-                alert("success");
+                //alert("success");
             } else {
                 alert("failed");
             }
@@ -265,7 +325,7 @@ function modifyNode() {
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
-                alert("success");
+                //alert("success");
             } else {
                 alert("failed");
             }
