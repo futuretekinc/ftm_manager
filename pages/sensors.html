@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -23,7 +23,7 @@
     <![endif]-->
 
 </head>
-<body>
+<body style="background-color:white">
     <div id="wrapper">
         <!-- 상단 네비게이션바 -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
@@ -65,7 +65,7 @@
             <!--</div>-->
         </nav>
 
-        <div id="page-wrapper">
+        <div id="page-wrapper" style="width:970px; max-width: none !important;">
             <br>
             <div class="row" id="search_row">
                 <div class="col-lg-12">
@@ -74,7 +74,8 @@
                             <label for="inputMac" id="search_label"></label>
                             <input type="text" class="form-control" id="inputMac"> <!-- placeholder="비워두면 전체검색"> -->
                         </div>
-                        <button type="button" class="btn btn-default" id="btn_search" data-loading-text="Searching..." autocomplete="off"></button>
+                        <button type="button" class="btn btn-info" id="btn_search" data-loading-text="검색중..." autocomplete="off"></button>
+                        <button type="button" class="btn btn-success" id="btn_register" disabled></button>
                     </form>
                 </div>
             </div>

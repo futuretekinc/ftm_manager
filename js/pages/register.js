@@ -2,6 +2,7 @@
  * Created by kindmong on 2015-10-27.
  */
 var sensors = [];
+var sensorNodes = [];
 var interval;
 var intervalCount = 0;
 
@@ -16,6 +17,7 @@ function init() {
     document.getElementById("menu_clouds").innerHTML = _t('clouds');
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
+    document.getElementById("btn_register").innerHTML = _t('register');
 }
 
 $(document).ready(function(){
@@ -23,6 +25,16 @@ $(document).ready(function(){
 
     // 검색 버튼
     $("#btn_search").click(function(){
+
+        for (var i=0; i<sensors.length; i++) {
+            var cb = document.getElementById(sensors[i]);
+            if (cb != null) {
+                cb.checked = false;    
+            }
+        }
+        sensors = [];
+        sensorNodes = [];
+
         var mac = document.getElementById("inputMac").value;
         mac = mac.replace(/ /gi, '');
         if (mac != '') {
@@ -188,63 +200,74 @@ function getEps(_eps, _isAll) {
 }
 
 // 패널별 등록 이거나 전체 패널에서 선택된 센서를 같이 등록 하도록 수정해야함.
-function addSensorList() {
+$('#btn_register').click(function addSensorList() {
     console.log("센서 등록");
-    var did = this.id.substr(9);
-    console.log("getIsNode(did)", getIsNode(did));
-    //return;
-    if (!getIsNode(did)) {
-        //console.log("!!!!!!!");
-        //http://10.0.1.18/cgi-bin/node?cmd=add&type=snmp&version=1&url=10.0.1.148&community=futuretek&mib=fte.mib
-        // 센서노드가 등록이 안되어 있으면 최초 한번 등록
-        $.ajax ({
-            type:"get",
-            url:"/cgi-bin/discovery?cmd=nodes",
-            async:false,
-            dataType:"json",
-            success:function(json) {
-                var result = json.result;
-                
-                if (result == "success") {
-                    var nodes = json.nodes;
-                    $.each(nodes, function(index, node) {
-                        if (did.toLowerCase() == node.did.toLowerCase()) {
-                            $.ajax ({
-                                type:"get",
-                                url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=" + node.snmp.mib + "&location=" + did,
-                                async:false,
-                                dataType:"json",
-                                success:function(json) {
-                                    var result = json.result;
-                                    console.log("/cgi-bin/node?cmd=add", result);
-                                    if (result == "success") {
+    for (var i=0; i<sensorNodes.length; i++) {
+        //var did = this.id.substr(9);
+        var did = sensorNodes[i];
+        console.log("getIsNode(did)", getIsNode(did), did);
+        //return;
+        if (!getIsNode(did)) {
+            //console.log("!!!!!!!");
+            //http://10.0.1.18/cgi-bin/node?cmd=add&type=snmp&version=1&url=10.0.1.148&community=futuretek&mib=fte.mib
+            // 센서노드가 등록이 안되어 있으면 최초 한번 등록
+            $.ajax ({
+                type:"get",
+                url:"/cgi-bin/discovery?cmd=nodes",
+                async:false,
+                dataType:"json",
+                success:function(json) {
+                    var result = json.result;
+                    
+                    if (result == "success") {
+                        var nodes = json.nodes;
+                        $.each(nodes, function(index, node) {
+                            if (did.toLowerCase() == node.did.toLowerCase()) {
+                                $.ajax ({
+                                    type:"get",
+                                    url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=" + node.snmp.mib + "&location=" + did,
+                                    async:false,
+                                    dataType:"json",
+                                    success:function(json) {
+                                        var result = json.result;
+                                        console.log("/cgi-bin/node?cmd=add", result);
+                                        if (result == "success") {
 
-                                    } else {
-                                        console.log("failed");
+                                        } else {
+                                            console.log("failed");
+                                        }
                                     }
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    console.log("failed");
+                                });
+                            }
+                        });
+                    } else {
+                        console.log("failed");
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     // 센서노드 여부 확인 후 센서 등록.
     $.each (sensors, function (index, value){
+
         var epid = value.substr(3).toLowerCase();
+        //==================================================
+        var tr = document.getElementById("tr_" + value.substr(3));
+        console.log("test = ", tr);
+        var tr_parent = tr.parentNode;
+        var did = tr_parent.id.substr(6);
+        //==================================================
         var type = document.getElementById("tr_" + value.substr(3)).cells[2].innerHTML;
-        var name = document.getElementById("tr_" + value.substr(3)).cells[3].innerHTML;
-        console.log(did, type, epid);
+        var name = document.getElementById("name_" + value.substr(3)).value;
+        var interval = document.getElementById("interval_" + value.substr(3)).value;
+        console.log(did, type, epid, name, interval);
         
         if (type == "DIGITAL INPUT") { type = "di"; }
 
         $.ajax ({
             type:"get",
-            url:"/cgi-bin/ep?cmd=add&epid=" + epid + "&type=" + type + "&did=" + did + "&name=" + name,
+            url:"/cgi-bin/ep?cmd=add&epid=" + epid + "&type=" + type + "&did=" + did + "&name=" + name,// + "&interval=" + interval,
             async:false,
             dataType:"json",
             success:function(json) {
@@ -288,7 +311,7 @@ function addSensorList() {
     });
 
     sensors = [];
-}
+});
 
 function getIsNode(_did) {
     var isnode;
@@ -345,6 +368,9 @@ function makePanel(_mac) {
         return document.getElementById("tbody_" + _mac);
     }
 
+    sensorNodes.push(_mac);
+    console.log("sensorNodes = ", sensorNodes);
+
     // 패널을 추가할 row 생성
     var row = document.createElement("div");
     row.setAttribute("id", "row_" + _mac);
@@ -367,12 +393,12 @@ function makePanel(_mac) {
     panel_footer.setAttribute("class", "panel-footer");
 
     //패널 등록 버튼
-    var btn_register = document.createElement("button");
-    btn_register.setAttribute("class", "btn btn-success");
-    btn_register.setAttribute("type", "button");
-    btn_register.setAttribute("id", "register_" + _mac);
-    btn_register.addEventListener("click", addSensorList);
-    btn_register.appendChild(document.createTextNode(_t("register")));
+    // var btn_register = document.createElement("button");
+    // btn_register.setAttribute("class", "btn btn-success");
+    // btn_register.setAttribute("type", "button");
+    // btn_register.setAttribute("id", "register_" + _mac);
+    // btn_register.addEventListener("click", addSensorList);
+    // btn_register.appendChild(document.createTextNode(_t("register")));
 
     //패널 닫기 버튼
     var btn_close = document.createElement("button");
@@ -393,20 +419,23 @@ function makePanel(_mac) {
     //var input = document.createElement("input");
     //input.setAttribute("type", "checkbox");
     //input.value = "";
-    thead_tr.appendChild(document.createElement("th")).innerHTML = ""; //appendChild(input);
-    thead_tr.appendChild(document.createElement("th")).innerHTML = _t("epid");
-    thead_tr.appendChild(document.createElement("th")).innerHTML = _t("type");
-    thead_tr.appendChild(document.createElement("th")).innerHTML = _t("name");
-    thead_tr.appendChild(document.createElement("th")).innerHTML = _t("unit");
-    thead_tr.appendChild(document.createElement("th")).innerHTML = _t("state");
-    thead_tr.appendChild(document.createElement("th")).innerHTML = _t("interval");
+
+    var thNames = ["", _t("epid"), _t("type"), _t("name"), _t("unit"), _t("state"), _t("interval")];
+    var className = ["col-xs-0", "col-xs-2", "col-xs-2", "col-xs-3", "col-xs-1", "col-xs-2", "col-xs-2"];
+
+    for (var i=0; i<thNames.length; i++) {
+        var th = document.createElement("th");
+        th.setAttribute("class", className[i]);
+        thead_tr.appendChild(th).innerHTML = thNames[i];
+    }
+
     table.appendChild(thead);
 
     var tbody = document.createElement("tbody");
     tbody.setAttribute("id", "tbody_" + _mac);
     table.appendChild(tbody);
 
-    panel_footer.appendChild(btn_register);
+    //panel_footer.appendChild(btn_register);
     panel_footer.appendChild(btn_close);
     row.appendChild(col_lg_12);
     col_lg_12.appendChild(panel);
@@ -441,20 +470,55 @@ function makeBody(_tbody, _ep) {
     tbody_tr.setAttribute("id", "tr_" + _ep.epid);
 
 	tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.type;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.name;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.unit;
+    //=================== NAME ==============================================
+    var td = document.createElement("td");
+    var input_tf = document.createElement("input");
+    input_tf.setAttribute("id", "name_" + _ep.epid);
+    input_tf.setAttribute("type", "text");
+    input_tf.setAttribute("class", "form-control");
+    input_tf.setAttribute("style", "width: 100%; height: 100%; border:0");
+    input_tf.value = _ep.name;
+    td.appendChild(input_tf);
+    tbody_tr.appendChild(td);
+    //========================================================================
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.name;
+    //=================== UNIT ==============================================
+    var td = document.createElement("td");
+    var input_tf = document.createElement("input");
+    input_tf.setAttribute("id", "unit_" + _ep.epid);
+    input_tf.setAttribute("type", "text");
+    input_tf.setAttribute("class", "form-control");
+    input_tf.setAttribute("style", "width: 100%; height: 100%; border:0");
+    input_tf.value = _ep.unit;
+    td.appendChild(input_tf);
+    tbody_tr.appendChild(td);
+    //========================================================================
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.unit;
     //=================== STATE ==============================================
-    var th = document.createElement("td");
+    var td = document.createElement("td");
     var s = document.createElement("select");
     s.setAttribute("id", "select_" + _ep.epid);
     s.setAttribute("style", "border:0; width:100%; height:100%");
     s.appendChild(document.createElement("option")).innerHTML = "RUN";
     s.appendChild(document.createElement("option")).innerHTML = "STOP";
-    th.appendChild(s);
-    tbody_tr.appendChild(th);
+    td.appendChild(s);
+    tbody_tr.appendChild(td);
     //========================================================================
     //tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.state;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.interval;
+    //=================== INTERVAL ==============================================
+    var td = document.createElement("td");
+    var input_tf = document.createElement("input");
+    input_tf.setAttribute("id", "interval_" + _ep.epid);
+    input_tf.setAttribute("type", "number");
+    input_tf.setAttribute("class", "form-control");
+    input_tf.setAttribute("style", "width: 100%; height: 100%; border:0");
+    input_tf.value = _ep.interval;
+    td.appendChild(input_tf);
+    tbody_tr.appendChild(td);
+    //========================================================================
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.interval;
+
+    $('#btn_register').prop('disabled', false);
 }
 
 function removeList(_epid) {
@@ -478,6 +542,14 @@ function removeList(_epid) {
         row_parent.removeChild(row);
         row = null;
     }
+
+    $('#btn_register').prop('disabled', true);
+    for (var i=0; i<sensorNodes.length; i++) {
+        var hasRow = document.getElementById("row_" + sensorNodes[i]);
+        if (hasRow != null) {
+            $('#btn_register').prop('disabled', false);
+        }
+    }
 }
 
 function removePanel() {
@@ -490,4 +562,12 @@ function removePanel() {
     row_parent.removeChild(row);
     row = null;
    // console.log(mac);
+
+    $('#btn_register').prop('disabled', true);
+    for (var i=0; i<sensorNodes.length; i++) {
+        var hasRow = document.getElementById("row_" + sensorNodes[i]);
+        if (hasRow != null) {
+            $('#btn_register').prop('disabled', false);
+        }
+    }
 }

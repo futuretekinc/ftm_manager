@@ -89,11 +89,11 @@ function makePanel(_did) {
 
     //var thNames = ["<span class='glyphicon glyphicon-star' aria-hidden='true'></span>", "epid", "type", "name", "unit", "interval"];
     var thNames = [ _t("name"), _t("type"), _t("value"), _t("state"), _t("graph")];
-    //var className = ["col-md-1", "col-md-1", "col-md-2", "col-md-2", "col-md-1", "col-md-3", "col-md-2", "col-md-2"];
+    var className = ["col-xs-3", "col-xs-3", "col-xs-3", "col-xs-1", "col-xs-2"];
 
     for (var i=0; i<thNames.length; i++) {
         var th = document.createElement("th");
-        //th.setAttribute("class", className[i]);
+        th.setAttribute("class", className[i]);
         thead_tr.appendChild(th).innerHTML = thNames[i];
     }
 
@@ -194,9 +194,14 @@ function makeBody(_tbody, _eps) {
         var modal_tbody = document.getElementById("modal_tbody");
         datas = [];
 
+        var begin = Math.round(new Date().getTime()/1000);
+        var end = begin - 3600;
+
+        console.log(timeConverter(begin), timeConverter(end));
+
         $.ajax ({
             type:"get",
-            url:"/cgi-bin/data?cmd=get&epid=" + _eps.epid + "&index=0&count=20",
+            url:"/cgi-bin/data?cmd=get&epid=" + _eps.epid + "&begin=" + begin + "&end=" + end,//"&index=0&count=60",
             async:false,
             dataType:"json",
             success:function(json) {
@@ -235,12 +240,12 @@ function asyncEps() {
                         var epid = eps[key].epid;
                         var time = eps[key].time;
                         var value = eps[key].value;
-                        console.log(epid, value, time);
+                        //console.log(epid, value, time);
 
                         var tr = document.getElementById("tr_" + epid);
                         //var time_td = tr.cells[3];
                         var value_td = tr.cells[2];
-                        console.log(value_td.innerHTML.split(' ')[1]);
+                        //console.log(value_td.innerHTML.split(' ')[1]);
                         //time_td.innerHTML = timeConverter(time);
                         value_td.innerHTML = value + " " + value_td.innerHTML.split(' ')[1];
                     }

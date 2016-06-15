@@ -1,9 +1,23 @@
 /**
  * Created by kindmong on 2015-10-27.
  */
+function init() {
+    $.li18n.currentLocale = 'kr';
+    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
+    document.getElementById("menu_sensors").innerHTML = _t('sensors');
+    document.getElementById("menu_clouds").innerHTML = _t('clouds');
+    document.getElementById("menu_network").innerHTML = _t('network');
+    document.getElementById("menu_system").innerHTML = _t('system');
+    document.getElementById("menu_sensornodes").innerHTML = _t('sensornodes');
+    document.getElementById("menu_rule").innerHTML = _t('rule');
+}
+
 $(document).ready(function(){
+    init();
+    loadTriggerList();
     loadActionList();
 });
+
 function loadActionList () {
     $.ajax ({
         type:"get",
@@ -20,12 +34,12 @@ function response_list(json) {
 
     $.each(actions, function(key){
         console.log("id :", actions[key].id, "type :", actions[key].type, "name :", actions[key].name, "epid :", actions[key].action.epid, "value :", actions[key].action.value);
-        var tbody = makePanel(actions[key].id);
-        makeBody(tbody, actions[key]);
+        var tbody = makeActionPanel(actions[key].id);
+        makeActionBody(tbody, actions[key]);
     });
 }
 
-function makePanel(_mac) {
+function makeActionPanel(_mac) {
 
     if (document.getElementById("row_" + _mac)) {
         //console.log("있음");
@@ -106,7 +120,7 @@ function makePanel(_mac) {
     return tbody;
 }
 
-function makeBody(_tbody, _actions) {
+function makeActionBody(_tbody, _actions) {
 
     var tbody_tr = document.createElement("tr");
     _tbody.appendChild(tbody_tr);
@@ -313,3 +327,144 @@ $('#modal_btn_action_add').click(function(){
     });
     $("#modal_action_add").modal("hide");
 });
+
+
+
+//======================================================================================================
+function loadTriggerList () {
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/trigger?cmd=list&field1=all",
+        async:false,
+        dataType:"json",
+        success:response_trigger_list
+    });
+}
+
+function response_trigger_list(json) {
+    console.log(json);
+    var triggers = json.triggers;
+
+    $.each(triggers, function(key){
+        console.log("id :", triggers[key].id, "type :", triggers[key].type, "name :", triggers[key].name, "epid :", triggers[key].epid, "contidion_detectTime :", triggers[key].contidion.detectTime, "contidion_holdTime :", triggers[key].contidion.holdTime, "contidion_value :", triggers[key].contidion.value);
+        var tbody = makePanel(triggers[key].id);
+        //var tbody = document.getElementById("trigger_list");
+        makeBody(tbody, triggers[key]);
+    });
+}
+
+function makePanel(_mac) {
+
+    if (document.getElementById("row_" + _mac)) {
+        //console.log("있음");
+        return document.getElementById("tbody_" + _mac);
+    }
+
+    // 패널을 추가할 row 생성
+    var row = document.createElement("div");
+    row.setAttribute("id", "row_" + _mac);
+    row.setAttribute("class", "row");
+
+    var col_lg_12 = document.createElement("div");
+    col_lg_12.setAttribute("class", "col-lg-12");
+
+    // 패널 생성
+    var panel = document.createElement("div");
+    panel.setAttribute("class", "panel panel-green");
+
+    // 패널 헤더
+    var panel_header = document.createElement("div");
+    panel_header.setAttribute("class", "panel-heading");
+    panel_header.innerHTML = _mac +  " ";
+
+    // 헤더에 수정 버튼 생성
+    var btn_modify = document.createElement("button");
+    btn_modify.setAttribute("class", "btn btn-default btn-xs");
+    btn_modify.setAttribute("type", "button");
+    btn_modify.setAttribute("id", "btn_" + _mac);
+
+    // 버튼의 설정 아이콘 생성.
+    var span = document.createElement("span");
+    span.setAttribute("class", "glyphicon glyphicon-cog");
+
+    //패널 안에 센서 리스트들 테이블로 구성
+    var table = document.createElement("table");
+    table.setAttribute("class", "table table-bordered");
+
+    var thead = document.createElement("thead");
+    var thead_tr = document.createElement("tr");
+    thead.appendChild(thead_tr);
+
+    var thNames = ["name", "id", "type", "epid", "value", "modify"];
+    //var className = ["col-sm-1", "col-sm-2", "col-sm-2", "col-sm-2", "col-sm-1", "col-sm-1"];
+
+    for (var i=0; i<thNames.length; i++) {
+        var th = document.createElement("th");
+        //th.setAttribute("class", className[i]);
+        thead_tr.appendChild(th).innerHTML = thNames[i];
+    }
+
+    table.appendChild(thead);
+
+
+    var tbody = document.createElement("tbody");
+    tbody.setAttribute("id", "tbody_" + _mac);
+    table.appendChild(tbody);
+
+    row.appendChild(col_lg_12);
+    col_lg_12.appendChild(panel);
+    panel.appendChild(panel_header);
+    panel.appendChild(table);
+
+    document.getElementById("page-wrapper").appendChild(row);
+
+    return tbody;
+}
+
+function makeBody(_tbody, _triggers) {
+
+    var tbody_tr = document.createElement("tr");
+    _tbody.appendChild(tbody_tr);
+
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.name;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.id;
+    tbody_tr.setAttribute("id", "tr_" + _triggers.id);
+
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.type;
+    
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.epid;
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.contidion.detectTime;
+    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.contidion.holdTime;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.contidion.value;
+
+    var btn_modify = document.createElement("button");
+    btn_modify.setAttribute("class", "btn btn-danger btn-xs");
+    btn_modify.setAttribute("type", "button");
+    btn_modify.setAttribute("data-dismiss", "modal");
+    btn_modify.setAttribute("id", "btn_" + _triggers.id);
+    btn_modify.appendChild(document.createTextNode("Modify"));
+    btn_modify.addEventListener("click", function(){
+        console.log(this.id);
+        var id = this.id.substr(4);
+        $.ajax ({
+            type:"get",
+            url:"/cgi-bin/trigger?cmd=get&id=" + id,
+            async:false,
+            dataType:"json",
+            success:function(json){
+                var trigger = json.trigger;
+                console.log(trigger);
+                document.getElementById("modal_trigger_title").innerHTML = trigger.id;
+                document.getElementById("trigger_name").value = trigger.name;
+                // document.getElementById("trigger_detect").value = trigger.contidion.detectTime;
+                // document.getElementById("trigger_hold").value = trigger.contidion.holdTime;
+                document.getElementById("trigger_value").value = trigger.contidion.value;
+                //document.getElementById("trigger_lower").value = trigger.name;
+                //document.getElementById("trigger_upper").value = trigger.name;
+            }
+        });
+
+        $("#modal_trigger_config").modal();
+    });
+    tbody_tr.appendChild(document.createElement("th")).appendChild(btn_modify);
+}

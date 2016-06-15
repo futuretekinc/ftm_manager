@@ -115,11 +115,11 @@ function makePanel(_mac) {
     thead.appendChild(thead_tr);
 
     var thNames = [_t("name"), _t("state"), _t("type"), _t("interval"), _t("epid"), _t("modify")];
-    //var className = ["col-sm-1", "col-sm-2", "col-sm-2", "col-sm-2", "col-sm-1", "col-sm-1"];
+    var className = ["col-xs-3", "col-xs-1", "col-xs-3", "col-xs-2", "col-xs-2", "col-xs-1"];
 
     for (var i=0; i<thNames.length; i++) {
         var th = document.createElement("th");
-        //th.setAttribute("class", className[i]);
+        th.setAttribute("class", className[i]);
         thead_tr.appendChild(th).innerHTML = thNames[i];
     }
 
@@ -191,9 +191,10 @@ function makeBody(_tbody, _eps) {
         } else {
             document.getElementById("state").options[1].selected = true;
         }
+        document.getElementById("sensor_interval").value = _eps.interval;
         $("#modal_sensor_config").modal();
     });
-    tbody_tr.appendChild(document.createElement("th")).appendChild(btn_modify);
+    tbody_tr.appendChild(document.createElement("td")).appendChild(btn_modify);
 }
 
 $("#modal_btn_sensor_delete").click(function(){
@@ -214,11 +215,13 @@ function modifySensor() {
 
     var tr = document.getElementById("tr_" + epid);
     console.log(tr);
-    var name_td = tr.childNodes.item(2);
-    var state_td = tr.childNodes.item(5);
+    var name_td = tr.childNodes.item(0);
+    var state_td = tr.childNodes.item(1);
+    var interval_td = tr.childNodes.item(3);
     //console.log(name_td);
     name_td.innerHTML = document.getElementById("sensor_name").value;
     state_td.innerHTML = document.getElementById("state").value;
+    interval_td.innerHTML = document.getElementById("sensor_interval").value;
 	//console.log("name_td.innerHTML =", name_td.innerHTML, document.getElementById("state").selectedIndex);
     
     var state;
@@ -230,7 +233,7 @@ function modifySensor() {
 
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/ep?cmd=set&epid=" + epid + "&name=" + name_td.innerHTML + "&enable=" + state,
+        url:"/cgi-bin/ep?cmd=set&epid=" + epid + "&name=" + name_td.innerHTML + "&enable=" + state + "&interval=" + interval_td.innerHTML,
         async:false,
         dataType:"json",
         success: function (json) {
@@ -239,7 +242,8 @@ function modifySensor() {
                 console.log("success");
                 window.location.reload();
             } else {
-                alert("failed");
+                console.log("failed");
+                window.location.reload();
             }
         }
     });
@@ -303,7 +307,7 @@ function removeNode() {
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
-                //alert("success");
+                window.location.reload();
             } else {
                 alert("failed");
             }
@@ -325,7 +329,7 @@ function modifyNode() {
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
-                //alert("success");
+                window.location.reload();
             } else {
                 alert("failed");
             }
