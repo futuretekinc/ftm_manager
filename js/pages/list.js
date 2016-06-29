@@ -14,11 +14,15 @@ function init() {
     document.getElementById("label_type").innerHTML = _t('type');
     document.getElementById("label_location").innerHTML = _t('location');
     document.getElementById("label_interval").innerHTML = _t('interval');
+    document.getElementById("label_node_interval").innerHTML = _t('interval');
     document.getElementById("label_timeout").innerHTML = _t('timeout');
     document.getElementById("label_url").innerHTML = _t('url');
 
     document.getElementById("label_name").innerHTML = _t('name');
+    document.getElementById("label_node_name").innerHTML = _t('name');
     document.getElementById("label_state").innerHTML = _t('state');
+    document.getElementById("label_unit").innerHTML = _t('unit');
+
 }
 
 $(document).ready(function(){
@@ -77,7 +81,7 @@ function makePanel(_mac) {
         async:false,
         dataType:"json",
         success:function (json) {
-            panel_header.innerHTML = json.location + " ";
+            panel_header.innerHTML = json.name + " ";
         }
     });
 
@@ -142,8 +146,9 @@ function makePanel(_mac) {
 
 function response_node_info(json) {
     document.getElementById("modal_node_title").innerHTML = json.did;
+    document.getElementById("node_name").value = json.name;
     document.getElementById("node_location").value = json.location;
-    document.getElementById("node_interval").value = json.interval;
+    document.getElementById("node_interval").value = json.report_interval;
     document.getElementById("node_type").value = json.type;
     document.getElementById("node_timeout").value = json.timeout;
     document.getElementById("node_url").value = json.snmp.url;
@@ -192,6 +197,7 @@ function makeBody(_tbody, _eps) {
             document.getElementById("state").options[1].selected = true;
         }
         document.getElementById("sensor_interval").value = _eps.interval;
+        document.getElementById("sensor_unit").value = _eps.unit;
         $("#modal_sensor_config").modal();
     });
     tbody_tr.appendChild(document.createElement("td")).appendChild(btn_modify);
@@ -233,7 +239,7 @@ function modifySensor() {
 
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/ep?cmd=set&epid=" + epid + "&name=" + name_td.innerHTML + "&enable=" + state + "&interval=" + interval_td.innerHTML,
+        url:"/cgi-bin/ep?cmd=set&epid=" + epid + "&name=" + name_td.innerHTML + "&enable=" + state + "&interval=" + interval_td.innerHTML + "&unit=" + escape(document.getElementById("sensor_unit").value),
         async:false,
         dataType:"json",
         success: function (json) {
@@ -307,7 +313,7 @@ function removeNode() {
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
-                window.location.reload();
+                //window.location.reload();
             } else {
                 alert("failed");
             }
@@ -319,17 +325,18 @@ function modifyNode() {
     var did = document.getElementById("modal_node_title").innerHTML;
     var location = document.getElementById("node_location").value;
     var interval = document.getElementById("node_interval").value;
+    var name = document.getElementById("node_name").value;
     console.log(did);
 
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/node?cmd=set&did=" + did + "&location=" + location + "&interval=" + interval,
+        url:"/cgi-bin/node?cmd=set&did=" + did + "&location=" + location + "&interval=" + interval + "&name=" + name,
         async:false,
         dataType:"json",
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
-                window.location.reload();
+                //window.location.reload();
             } else {
                 alert("failed");
             }

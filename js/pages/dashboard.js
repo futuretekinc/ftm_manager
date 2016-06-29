@@ -74,7 +74,7 @@ function makePanel(_did) {
         async:false,
         dataType:"json",
         success:function (json){
-            panel_header.innerHTML = json.location;
+            panel_header.innerHTML = json.name;
         }
     });
 
@@ -126,7 +126,7 @@ function makeBody(_tbody, _eps) {
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.name;
     tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.type;
     //tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.interval;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = "" + _eps.unit;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = " " + _eps.unit;
     //tbody_tr.appendChild(document.createElement("td")).innerHTML = " " + _eps.unit;
     //tbody_tr.appendChild(document.createElement("td")).innerHTML = _eps.unit;
     

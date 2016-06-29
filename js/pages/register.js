@@ -225,7 +225,7 @@ $('#btn_register').click(function addSensorList() {
                             if (did.toLowerCase() == node.did.toLowerCase()) {
                                 $.ajax ({
                                     type:"get",
-                                    url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=" + node.snmp.mib + "&location=" + did,
+                                    url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=" + node.snmp.mib,
                                     async:false,
                                     dataType:"json",
                                     success:function(json) {
@@ -261,13 +261,15 @@ $('#btn_register').click(function addSensorList() {
         var type = document.getElementById("tr_" + value.substr(3)).cells[2].innerHTML;
         var name = document.getElementById("name_" + value.substr(3)).value;
         var interval = document.getElementById("interval_" + value.substr(3)).value;
-        console.log(did, type, epid, name, interval);
+        var unit = document.getElementById("unit_" + value.substr(3)).value;
+        console.log(did, type, epid, name, unit, interval);
         
         if (type == "DIGITAL INPUT") { type = "di"; }
+        if (type == "DIGITAL OUTPUT") { type = "do"; }
 
         $.ajax ({
             type:"get",
-            url:"/cgi-bin/ep?cmd=add&epid=" + epid + "&type=" + type + "&did=" + did + "&name=" + name,// + "&interval=" + interval,
+            url:"/cgi-bin/ep?cmd=add&epid=" + epid + "&type=" + type + "&did=" + did + "&name=" + name + "&unit=" + escape(unit) + "&interval=" + interval,
             async:false,
             dataType:"json",
             success:function(json) {

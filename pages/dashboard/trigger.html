@@ -203,11 +203,11 @@
                             <label for="add_type" class="col-sm-3 control-label" id="add_label_type">Type</label>
                             <div class="col-sm-9">
                                 <select class="form-control" id="add_type">
-                                    <option>above</option>
-                                    <option>below</option>
-                                    <option>include</option>
-                                    <option>except</option>
-                                    <option>change</option>
+                                    <option value="above">above</option>
+                                    <option value="below">below</option>
+                                    <option value="include">include</option>
+                                    <option value="except">except</option>
+                                    <option value="change">change</option>
                                 </select>
                             </div>
                         </div>
@@ -287,10 +287,10 @@
                             <label for="add_type" class="col-sm-2 control-label" id="add_action_label_type">Type</label>
                             <div class="col-sm-10">
                                 <select class="form-control" id="add_action_type">
-                                    <option>set</option>
-                                    <option>sms</option>
-                                    <option>push</option>
-                                    <option>mail</option>
+                                    <option value="set">set</option>
+                                    <option value="sms">sms</option>
+                                    <option value="push">push</option>
+                                    <option value="mail">mail</option>
                                 </select>
                             </div>
                         </div>
@@ -368,7 +368,13 @@
                 <div class="modal-body">
                     <form class="form-horizontal" role="form">
                         <div class="form-group">
-                            <label for="rule_name" class="col-sm-2 control-label">Name</label>
+                            <label for="rule_id" class="col-sm-2 control-label" id="rule_label_id">ID</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="rule_id" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rule_name" class="col-sm-2 control-label" id="rule_label_name">Name</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="rule_name">
                             </div>

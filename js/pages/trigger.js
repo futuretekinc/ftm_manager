@@ -19,7 +19,7 @@ function init() {
     document.getElementById("btn_trigger_add").innerHTML = _t('trigger_title');
 
     document.getElementById("add_label_name").innerHTML = _t('name');
-    document.getElementById("add_label_epid").innerHTML = _t('epid');
+    document.getElementById("add_label_epid").innerHTML = _t('sensors');
     document.getElementById("add_label_type").innerHTML = _t('trigger_type');
     document.getElementById("add_label_value").innerHTML = _t('value');
 
@@ -50,6 +50,9 @@ function init() {
     document.getElementById("add_action_type").options[1].innerHTML = _t('sms');
     document.getElementById("add_action_type").options[2].innerHTML = _t('push');
     document.getElementById("add_action_type").options[3].innerHTML = _t('mail');
+
+    document.getElementById("rule_label_id").innerHTML = _t('rule_id');
+    document.getElementById("rule_label_name").innerHTML = _t('rule_name');
 }
 
 $(document).ready(function(){
@@ -185,7 +188,21 @@ function makeBody(_tbody, _rules) {
         btn_modify_trigger.setAttribute("style", "margin-right:5px");
         btn_modify_trigger.setAttribute("type", "button");
         btn_modify_trigger.setAttribute("id", "btn_trigger_" + _rules.params.triggers[i]);
-        btn_modify_trigger.appendChild(document.createTextNode(_rules.params.triggers[i]));
+        //btn_modify_trigger.appendChild(document.createTextNode(_rules.params.triggers[i]));
+        
+        // 트리거 did를 가지고 이름을 가져와서 버튼 이름으로 넣는다.
+        $.ajax ({
+            type:"get",
+            url:"/cgi-bin/trigger?cmd=get&id=" + _rules.params.triggers[i],
+            async:false,
+            dataType:"json",
+            success:function(json){
+                var trigger = json.trigger;
+                btn_modify_trigger.appendChild(document.createTextNode(trigger.name));
+            }
+        });
+
+        
         btn_modify_trigger.addEventListener("click", function(){
             console.log(this.id);
             var id = this.id.substr(12);
@@ -218,7 +235,20 @@ function makeBody(_tbody, _rules) {
     btn_modify_action.setAttribute("style", "margin-right:5px");
     btn_modify_action.setAttribute("type", "button");
     btn_modify_action.setAttribute("id", "btn_action_" + _rules.params.actions[0]);
-    btn_modify_action.appendChild(document.createTextNode(_rules.params.actions[0]));
+    //btn_modify_action.appendChild(document.createTextNode(_rules.params.actions[0]));
+
+    // 액션 did를 가지고 이름을 가져와서 버튼 이름으로 넣는다.
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/action?cmd=get&id=" + _rules.params.actions[0],
+        async:false,
+        dataType:"json",
+        success:function(json){
+            var action = json.action;
+            btn_modify_action.appendChild(document.createTextNode(action.name));
+        }
+    });
+
     btn_modify_action.addEventListener("click", function(){
         console.log(this.id);
         var id = this.id.substr(11);
@@ -244,7 +274,7 @@ function makeBody(_tbody, _rules) {
     //tbody_tr.appendChild(document.createElement("td")).innerHTML = _t(_rules.state);
     var state_icon = document.createElement("span");
     state_icon.setAttribute("aria-hidden", "true");
-    if (_rules.state == "run") {
+    if (_rules.state == "ACTIVATE") {
         state_icon.setAttribute("style", "color:green; font-size:150%");
         state_icon.setAttribute("class", "glyphicon glyphicon-ok-sign");
     } else {
@@ -269,8 +299,9 @@ function makeBody(_tbody, _rules) {
             success:function(json){
                 var rule = json.rule;
                 console.log(rule);
-                document.getElementById("modal_rule_title").innerHTML = rule.id;
+                document.getElementById("modal_rule_title").innerHTML = rule.name;
                 document.getElementById("rule_name").value = rule.name;
+                document.getElementById("rule_id").value = rule.id;
             }
         });
 
@@ -292,7 +323,7 @@ $("#modal_btn_rule_modify").click(function(){
 function modifyRule() {
     
     // 센서의 이름을 수정할 수 있다.
-    var id = document.getElementById("modal_rule_title").innerHTML;
+    var id = document.getElementById("rule_id").value;
     console.log("id =", id);
 
     var tr = document.getElementById("tr_" + id);
@@ -303,7 +334,7 @@ function modifyRule() {
     console.log("name_td.innerHTML =", name_td.innerHTML);
 
     var url = "/cgi-bin/rule?cmd=set&id=" + id + "&name=" + name_td.innerHTML;
-
+    return;
     // value 값은 액션의 타입이 SET인 경우에만 적용됨.
 
     // if (type_td.innerHTML == "SET") {
@@ -793,12 +824,12 @@ function addTrigger() {
 
     var url = "/cgi-bin/trigger?cmd=add&type=" + type + "&epid=" + epid + "&value=" + value;
 
-    if (type == "include" || type == "except") {
+    if (type == _t("include") || type == _t("except")) {
         url += "&upper=" + upper + "&lower=" + lower
     }
 
     console.log(type, epid, value, name, upper, lower);
-
+    
     if (name != "") { url += "&name=" + name };
     // if (detect != "") { url += "&detect=" + detect };
     // if (hold != "") { url += "&hold=" + hold };
@@ -875,7 +906,7 @@ function clearTrigger() {
     // 현재 관리중인 epid 를 불러와서 select에 넣어준다.
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/ep?cmd=list",
+        url:"/cgi-bin/ep?cmd=list&field1=name",
         async:false,
         dataType:"json",
         success: function (json) {
@@ -885,10 +916,12 @@ function clearTrigger() {
             if (json.result == "success") {
                 $.each(eps, function(key){
                     var ep = eps[key].epid;
-                    console.log(ep);
+                    var name = eps[key].name;
+                    console.log(name, ep);
                     var option = document.createElement("option");
                     eps_select.appendChild(option);
-                    option.innerHTML = ep;
+                    option.innerHTML = name;
+                    option.setAttribute("value", ep);
                 });
             } else {
                 alert("load fail");
@@ -910,7 +943,7 @@ $('#modal_btn_action_add').click(function(){
     // 현재 관리중인 epid 를 불러와서 select에 넣어준다.
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/ep?cmd=list",
+        url:"/cgi-bin/ep?cmd=list&field1=name",
         async:false,
         dataType:"json",
         success: function (json) {
@@ -920,10 +953,12 @@ $('#modal_btn_action_add').click(function(){
             if (json.result == "success") {
                 $.each(eps, function(key){
                     var ep = eps[key].epid;
-                    console.log(ep);
+                    var name = eps[key].name;
+                    //console.log(ep);
                     var option = document.createElement("option");
                     eps_select.appendChild(option);
-                    option.innerHTML = ep;
+                    option.innerHTML = name;
+                    option.setAttribute("value", ep);
                 });
             } else {
                 alert("load fail");
@@ -938,8 +973,8 @@ $('#add_action_type').on('change', function () {
     
     var value_tf = document.getElementById("add_action_value");
     var epid_select = document.getElementById("add_action_epid");
-
-    if (this.value != _t("set")) {
+    console.log(this.value, _t("set"));
+    if (this.value != "set") {
         value_tf.disabled = epid_select.disabled = true;
         value_tf.value = epid_select.value = "";
     } else {
