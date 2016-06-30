@@ -37,11 +37,11 @@
                 <a class="navbar-brand" href="../dashboard.html">FTM Manager System</a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a href="../dashboard.html">Dashboard</a></li>
-                <li><a href="../sensors.html">Sensors</a></li>
-                <li><a href="../clouds.html">Clouds</a></li>
-                <li class="active"><a href="network_setting.html">Network</a></li>
-                <li><a href="../system.html">System</a></li>
+                <li><a href="../dashboard.html" id="menu_dashboard"></a></li>
+                <li><a href="../sensors.html" id="menu_sensors"></a></li>
+                <li><a href="../clouds.html" id="menu_clouds"></a></li>
+                <li class="active"><a href="network_setting.html" id="menu_network"></a></li>
+                <li><a href="../system.html" id="menu_system"></a></li>
             </ul>
 
             <!-- 왼쪽 사이드바 -->
@@ -100,7 +100,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="container col-lg-8">
-                    <h3 class="page-header">Firewall Setting</h3>
+                    <h3 class="page-header" id="h_firewall">Firewall Setting</h3>
                     <div class="form-group">
                         <label class="checkbox-inline">
                             <input type="checkbox" id="enable" value="option1"> Enable
@@ -109,12 +109,12 @@
                     <table class="table table-bordered" id="control_table">
                         <thead>
                         <tr>
-                            <th>No</th>
-                            <th>구분</th>
-                            <th>IP Address</th>
-                            <th>프로토콜</th>
-                            <th>포트</th>
-                            <th>추가</th>
+                            <th id="th_number">No</th>
+                            <th id="th_division">구분</th>
+                            <th id="th_ip">IP Address</th>
+                            <th id="th_protocol">프로토콜</th>
+                            <th id="th_port">포트</th>
+                            <th id="th_add">추가</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -124,13 +124,13 @@
                             <td>-</td>
                             <td>-</td>
                             <td>-</td>
-                            <td><input type='button' class='btn btn-default' id="btn_add" value='Add' onclick='onAddHost();'></td>
+                            <td><button type='button' class='btn btn-default' id="btn_add" value='Add' onclick='onAddHost();'></button></td>
                         </tr>
                         </tbody>
                     </table>
                     <div class="form-group">
                         <div>
-                            <button type="button" class="btn btn-default pull-right" onclick="onApply();">Modify</button>
+                            <button type="button" class="btn btn-default pull-right" onclick="onApply();" id="modify_btn">Modify</button>
                         </div>
                     </div>
                 </div>
@@ -150,5 +150,7 @@
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
     <script src="../../js/pages/firewall_setting.js"></script>
+	<script src="../../jquery.li18n.min.js"></script>
+    <script src="../../lang.js"></script>
 </body>
 </html>

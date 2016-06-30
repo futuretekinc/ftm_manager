@@ -6,6 +6,17 @@ $(document).ready(function(){
 });
 
 function init() {
+	$.li18n.currentLocale = 'kr';
+    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
+    document.getElementById("menu_sensors").innerHTML = _t('sensors');
+    document.getElementById("menu_clouds").innerHTML = _t('clouds');
+    document.getElementById("menu_network").innerHTML = _t('network');
+    document.getElementById("menu_system").innerHTML = _t('system');
+
+    document.getElementById("h_firewall").innerHTML = _t('firewall_setting');
+	document.getElementById("modify_btn").innerHTML = _t('modify');
+	document.getElementById("btn_add").innerHTML = _t('add');
+
     $.ajax({
         type:"get",
         url:"/cgi-bin/firewall?cmd=status",

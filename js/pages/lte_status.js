@@ -1,7 +1,22 @@
 /**
  * Created by kindmong on 2015-11-05.
  */
+function init() {
+    $.li18n.currentLocale = 'kr';
+    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
+    document.getElementById("menu_sensors").innerHTML = _t('sensors');
+    document.getElementById("menu_clouds").innerHTML = _t('clouds');
+    document.getElementById("menu_network").innerHTML = _t('network');
+    document.getElementById("menu_system").innerHTML = _t('system');
+
+	document.getElementById("th_port").innerHTML = _t('port');
+    document.getElementById("th_ip").innerHTML = _t('ip');
+    document.getElementById("th_subnet").innerHTML = _t('subnet');
+    document.getElementById("th_mac").innerHTML = _t('mac');
+}
+
 $(document).ready(function(){
+    init();
     usim_socket_status();
 });
 
