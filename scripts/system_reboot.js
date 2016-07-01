@@ -2,6 +2,16 @@ var	msg;
 var	msgConfirmRestart = 0;
 var msgResetaring = 1;
 var msgRestartFailed=2;
+
+$(document).ready(function(){
+    $.li18n.currentLocale = 'kr';
+    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
+    document.getElementById("menu_sensors").innerHTML = _t('sensors');
+    document.getElementById("menu_clouds").innerHTML = _t('clouds');
+    document.getElementById("menu_network").innerHTML = _t('network');
+    document.getElementById("menu_system").innerHTML = _t('system');
+});
+
 function onInit()
 {
 	msg = new Array();
