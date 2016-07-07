@@ -66,7 +66,7 @@ $(document).ready(function(){
 function startDiscovery(_isAll) {
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/discovery?cmd=start&ip=10.0.1.255",
+        url:"/cgi-bin/discovery?cmd=start&ip=192.168.1.255",
         async:false,
         dataType:"json",
         success:function(json) {
@@ -97,7 +97,7 @@ function getDiscoveryResult(_isAll) {
                     // 노드 리스트가져오기   
                     console.log("ready");
                     intervalCount = 0;
-                    getEpsList(_isAll);
+                    getEpsList(_isAll, json["ep count"]);
                     clearInterval(interval);
                     $("#btn_search").button('reset');
                 } else {
@@ -119,7 +119,7 @@ function getDiscoveryResult(_isAll) {
     });
 }
 
-function getEpsList(_isAll) {
+function getEpsList(_isAll, _epCount) {
     $.ajax ({
         type:"get",
         url:"/cgi-bin/ep?cmd=list",
@@ -136,7 +136,7 @@ function getEpsList(_isAll) {
                     console.log("getEpsList epid = ", registed_epid);
                     eps.push(registed_epid);
                 });
-                getEps(eps, _isAll);
+                getEps(eps, _isAll, _epCount);
             } else {
                 alert("discovery failed");
             }
@@ -144,33 +144,58 @@ function getEpsList(_isAll) {
     });
 }
 
-function getEps(_eps, _isAll) {
+function getEps(_eps, _isAll, _epCount) {
     var mac = document.getElementById("inputMac").value;
     mac = mac.replace(/ /gi, '');
     console.log("getEps() mac = ", mac);
 
-    $.ajax ({
-        type:"get",
-        url:"/cgi-bin/discovery?cmd=eps",
-        async:false,
-        dataType:"json",
-        success:function(json) {
-            var result = json.result;
-            console.log(result);
-            if (result == "success") {
-                var count = json.count;
-                var eps = json.eps;
-                console.log("count = ", count);
-                for (var i = 0; i<count; i++) {
-                    var ep = eps[i].ep;
-                    var did = ep.did;
-                    var epid = ep.epid;
-                    console.log("getEps() did =", did);
+    var eps = _epCount;
+    var limit = 9;
+    var discoveryIndex = parseInt(eps / limit);
+    var discoveryCount = parseInt(eps % limit);
+    console.log("_epCount = ", eps, discoveryIndex, discoveryCount);
 
-                    //console.log("getEps() mac == did", mac.toLowerCase(), did.toLowerCase(), _isAll);
-                    console.log("getEps() epid.toLowerCase()", _eps, epid.toLowerCase());
-                    if (_isAll == false) {
-                        if (mac.toLowerCase() == did.toLowerCase()) {
+    for (var i=0; i<=discoveryIndex; i++) {
+        var index = i * limit;
+            
+        if (i < discoveryIndex) {
+            discoveryCount = limit;
+        } 
+        console.log("index =", index, "count =", discoveryCount);
+        $.ajax ({
+            type:"get",
+            url:"/cgi-bin/discovery?cmd=eps" + "&index=" + index + "&count=" + discoveryCount,
+            async:false,
+            dataType:"json",
+            success:function(json) {
+                var result = json.result;
+                //console.log(result);
+                if (result == "success") {
+                    var count = json.count;
+                    var eps = json.eps;
+                    //console.log("count = ", count);
+                    for (var i = 0; i<count; i++) {
+                        var ep = eps[i].ep;
+                        var did = ep.did;
+                        var epid = ep.epid;
+                        //console.log("getEps() did =", did);
+
+                        //console.log("getEps() mac == did", mac.toLowerCase(), did.toLowerCase(), _isAll);
+                        //console.log("getEps() epid.toLowerCase()", _eps, epid.toLowerCase());
+                        if (_isAll == false) {
+                            if (mac.toLowerCase() == did.toLowerCase()) {
+                                if(_eps.indexOf(epid.toLowerCase()) == -1) {
+                                    
+                                    if (ep.type != "MULTI-FUNCTION") {
+                                        var tbody = makePanel(did);
+                                        makeBody(tbody, ep);
+                                    }
+                                }
+                            } else {
+                                console.log("맥으로 검색되는 센서가 없습니다.");
+                            }
+                        } else {
+                            //console.log(_eps.indexOf(epid.toLowerCase()));
                             if(_eps.indexOf(epid.toLowerCase()) == -1) {
                                 
                                 if (ep.type != "MULTI-FUNCTION") {
@@ -178,25 +203,16 @@ function getEps(_eps, _isAll) {
                                     makeBody(tbody, ep);
                                 }
                             }
-                        } else {
-                            console.log("맥으로 검색되는 센서가 없습니다.");
-                        }
-                    } else {
-                        console.log(_eps.indexOf(epid.toLowerCase()));
-                        if(_eps.indexOf(epid.toLowerCase()) == -1) {
-                            
-                            if (ep.type != "MULTI-FUNCTION") {
-                                var tbody = makePanel(did);
-                                makeBody(tbody, ep);
-                            }
                         }
                     }
+                } else {
+                    alert("failed");
                 }
-            } else {
-                alert("failed");
             }
-        }
-    });   
+        }); 
+    }
+
+      
 }
 
 // 패널별 등록 이거나 전체 패널에서 선택된 센서를 같이 등록 하도록 수정해야함.
@@ -471,7 +487,7 @@ function makeBody(_tbody, _ep) {
     tbody_tr.appendChild(document.createElement("th")).innerHTML = _ep.epid;
     tbody_tr.setAttribute("id", "tr_" + _ep.epid);
 
-	tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.type;
+    tbody_tr.appendChild(document.createElement("td")).innerHTML = _ep.type;
     //=================== NAME ==============================================
     var td = document.createElement("td");
     var input_tf = document.createElement("input");
