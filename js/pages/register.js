@@ -150,7 +150,7 @@ function getEps(_eps, _isAll, _epCount) {
     console.log("getEps() mac = ", mac);
 
     var eps = _epCount;
-    var limit = 9;
+    var limit = 5;
     var discoveryIndex = parseInt(eps / limit);
     var discoveryCount = parseInt(eps % limit);
     console.log("_epCount = ", eps, discoveryIndex, discoveryCount);
@@ -158,13 +158,16 @@ function getEps(_eps, _isAll, _epCount) {
     for (var i=0; i<=discoveryIndex; i++) {
         var index = i * limit;
             
+        var count1 = 0;
         if (i < discoveryIndex) {
-            discoveryCount = limit;
-        } 
-        console.log("index =", index, "count =", discoveryCount);
+            count1 = limit;
+        } else {
+            count1 = discoveryCount;
+        }
+        console.log("index =", index, "count =", count1);
         $.ajax ({
             type:"get",
-            url:"/cgi-bin/discovery?cmd=eps" + "&index=" + index + "&count=" + discoveryCount,
+            url:"/cgi-bin/discovery?cmd=eps" + "&index=" + index + "&count=" + count1,
             async:false,
             dataType:"json",
             success:function(json) {
@@ -429,22 +432,30 @@ function makePanel(_mac) {
     //패널 안에 센서 리스트들 테이블로 구성
     var table = document.createElement("table");
     table.setAttribute("class", "table table-bordered");
+    table.setAttribute("id", "table_" + _mac);
 
     var thead = document.createElement("thead");
     var thead_tr = document.createElement("tr");
     thead.appendChild(thead_tr);
 
-    //var input = document.createElement("input");
-    //input.setAttribute("type", "checkbox");
-    //input.value = "";
+    var input = document.createElement("input");
+    input.setAttribute("type", "checkbox");
+    input.setAttribute("id", "cb_" + _mac);
+    input.value = "";
+    input.addEventListener("change", onAllCheckboxClicked);
 
-    var thNames = ["", _t("epid"), _t("type"), _t("name"), _t("unit"), _t("state"), _t("interval")];
+    var thNames = [input, _t("epid"), _t("type"), _t("name"), _t("unit"), _t("state"), _t("interval")];
     var className = ["col-xs-0", "col-xs-2", "col-xs-2", "col-xs-3", "col-xs-1", "col-xs-2", "col-xs-2"];
 
     for (var i=0; i<thNames.length; i++) {
         var th = document.createElement("th");
         th.setAttribute("class", className[i]);
-        thead_tr.appendChild(th).innerHTML = thNames[i];
+        if (i == 0)
+        {
+            thead_tr.appendChild(th).appendChild(thNames[i]);
+        } else {
+            thead_tr.appendChild(th).innerHTML = thNames[i];
+        }
     }
 
     table.appendChild(thead);
@@ -464,6 +475,38 @@ function makePanel(_mac) {
     document.getElementById("page-wrapper").appendChild(row);
 
     return tbody;
+}
+
+function onAllCheckboxClicked() {
+    console.log("onAllCheckboxClicked", this.id.substr(3));
+    var mac = this.id.substr(3);
+    var table = "table_" + mac;
+    var tr_length = $('#'+ table + ' tbody tr').length;
+    var cb_ids = $('#'+ table + ' tbody tr');
+    //console.log($('#'+ table + ' tbody tr'));
+    
+    if (this.checked == true) {
+        for (var i=0; i<tr_length; i++)
+        {
+            var sensorID = cb_ids[i].id;
+            var sensorCB = "cb_" + sensorID.substr(3);
+            console.log(sensorCB);
+            if (sensors.indexOf(sensorCB) == -1) {
+                
+                sensors.push(sensorCB);
+                var cb = document.getElementById(sensorCB);
+                cb.checked = true;
+            }
+        }
+    } else {
+        for (var i=0; i<sensors.length; i++)
+        {
+            var cb = document.getElementById(sensors[i]);
+            cb.checked = false;
+//          sensors.splice(sensors[i], 1);
+        }
+        sensors = [];
+    }
 }
 
 function makeBody(_tbody, _ep) {
