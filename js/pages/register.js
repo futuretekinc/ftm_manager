@@ -18,6 +18,19 @@ function init() {
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
     document.getElementById("btn_register").innerHTML = _t('register');
+
+//     var mac_search = document.getElementById("mac_search");
+//     mac_search.addEventListener("click", function(){
+//         document.getElementById("mac_tab").setAttribute("class", "active");
+//         document.getElementById("ip_tab").setAttribute("class", "deactive");
+//         document.getElementById("search_label").innerHTML = _t("mac") + " :";
+//     });
+//     var ip_search = document.getElementById("ip_search");
+//     ip_search.addEventListener("click", function(){
+//         document.getElementById("mac_tab").setAttribute("class", "deactive");
+//         document.getElementById("ip_tab").setAttribute("class", "active");
+//         document.getElementById("search_label").innerHTML = _t("ip") + " :";
+//     });
 }
 
 $(document).ready(function(){
@@ -25,48 +38,58 @@ $(document).ready(function(){
 
     // 검색 버튼
     $("#btn_search").click(function(){
-
-        for (var i=0; i<sensors.length; i++) {
-            var cb = document.getElementById(sensors[i]);
-            if (cb != null) {
-                cb.checked = false;    
-            }
-        }
-        sensors = [];
-        sensorNodes = [];
-
-        var mac = document.getElementById("inputMac").value;
-        mac = mac.replace(/ /gi, '');
-        if (mac != '') {
-            
-            if (document.getElementById("row_" + mac)) {
-                alert("Already loaded");
-            } else {
-                //loadData(mac);
-                $("#btn_search").button('loading');
-                startDiscovery(false);
-                //$("#btn_search").attr('disabled',true);
-            }
-
-        } else {
-            //alert("All Search Mac");
-
-            if (document.getElementById("row_" + mac)) {
-                alert("Already loaded");
-            } else {
-                //loadData(mac);
-                $("#btn_search").button('loading');
-                startDiscovery(true);
-                //$("#btn_search").attr('disabled',true);
-            }
-        }
+        searchForMac();
+        // var macSearchState = document.getElementById("mac_tab").getAttribute("class");
+        // if (macSearchState == "active") {
+        //     console.log("맥으로 검색");
+        //     searchForMac();
+        // } else {
+        //     console.log("아이피로 검색");
+        // }
     });
 });
+
+function searchForMac() {
+    for (var i=0; i<sensors.length; i++) {
+        var cb = document.getElementById(sensors[i]);
+        if (cb != null) {
+            cb.checked = false;    
+        }
+    }
+    sensors = [];
+    sensorNodes = [];
+
+    var mac = document.getElementById("inputMac").value;
+    mac = mac.replace(/ /gi, '');
+    if (mac != '') {
+        
+        if (document.getElementById("row_" + mac)) {
+            alert("Already loaded");
+        } else {
+            //loadData(mac);
+            $("#btn_search").button('loading');
+            startDiscovery(false);
+            //$("#btn_search").attr('disabled',true);
+        }
+
+    } else {
+        //alert("All Search Mac");
+
+        if (document.getElementById("row_" + mac)) {
+            alert("Already loaded");
+        } else {
+            //loadData(mac);
+            $("#btn_search").button('loading');
+            startDiscovery(true);
+            //$("#btn_search").attr('disabled',true);
+        }
+    }
+}
 
 function startDiscovery(_isAll) {
     $.ajax ({
         type:"get",
-        url:"/cgi-bin/discovery?cmd=start&ip=192.168.1.255",
+        url:"/cgi-bin/discovery?cmd=start&ip=10.0.1.255",
         async:false,
         dataType:"json",
         success:function(json) {
@@ -218,16 +241,15 @@ function getEps(_eps, _isAll, _epCount) {
       
 }
 
-// 패널별 등록 이거나 전체 패널에서 선택된 센서를 같이 등록 하도록 수정해야함.
 $('#btn_register').click(function addSensorList() {
     console.log("센서 등록");
-    for (var i=0; i<sensorNodes.length; i++) {
+    /*for (var i=0; i<sensorNodes.length; i++) {
         //var did = this.id.substr(9);
         var did = sensorNodes[i];
-        console.log("getIsNode(did)", getIsNode(did), did);
-        //return;
-        if (!getIsNode(did)) {
-            //console.log("!!!!!!!");
+        var isSavedNode = getIsNode(did);
+        console.log("getIsNode(did)", isSavedNode, did);
+        
+        if (!isSavedNode) {
             //http://10.0.1.18/cgi-bin/node?cmd=add&type=snmp&version=1&url=10.0.1.148&community=futuretek&mib=fte.mib
             // 센서노드가 등록이 안되어 있으면 최초 한번 등록
             $.ajax ({
@@ -241,6 +263,7 @@ $('#btn_register').click(function addSensorList() {
                     if (result == "success") {
                         var nodes = json.nodes;
                         $.each(nodes, function(index, node) {
+                            console.log(did.toLowerCase(), node.did.toLowerCase());
                             if (did.toLowerCase() == node.did.toLowerCase()) {
                                 $.ajax ({
                                     type:"get",
@@ -249,7 +272,7 @@ $('#btn_register').click(function addSensorList() {
                                     dataType:"json",
                                     success:function(json) {
                                         var result = json.result;
-                                        console.log("/cgi-bin/node?cmd=add", result);
+                                        console.log("/cgi-bin/node?cmd=add", result); 
                                         if (result == "success") {
 
                                         } else {
@@ -265,8 +288,8 @@ $('#btn_register').click(function addSensorList() {
                 }
             });
         }
-    }
-
+    }*/
+    //return;
     // 센서노드 여부 확인 후 센서 등록.
     $.each (sensors, function (index, value){
 
@@ -276,6 +299,47 @@ $('#btn_register').click(function addSensorList() {
         console.log("test = ", tr);
         var tr_parent = tr.parentNode;
         var did = tr_parent.id.substr(6);
+        //==================================================
+        var isSavedNode = getIsNode(did);
+        if (!isSavedNode) {
+            // 센서노드가 등록이 안되어 있으면 최초 한번 등록
+            $.ajax ({
+                type:"get",
+                url:"/cgi-bin/discovery?cmd=nodes",
+                async:false,
+                dataType:"json",
+                success:function(json) {
+                    var result = json.result;
+                    
+                    if (result == "success") {
+                        var nodes = json.nodes;
+                        $.each(nodes, function(index, node) {
+                            console.log(did.toLowerCase(), node.did.toLowerCase());
+                            if (did.toLowerCase() == node.did.toLowerCase()) {
+                                $.ajax ({
+                                    type:"get",
+                                    url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=" + node.snmp.mib,
+                                    async:false,
+                                    dataType:"json",
+                                    success:function(json) {
+                                        var result = json.result;
+                                        console.log("/cgi-bin/node?cmd=add", result); 
+                                        if (result == "success") {
+
+                                        } else {
+                                            console.log("failed");
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        console.log("failed");
+                    }
+                }
+            });
+        }    
+
         //==================================================
         var type = document.getElementById("tr_" + value.substr(3)).cells[2].innerHTML;
         var name = document.getElementById("name_" + value.substr(3)).value;
@@ -349,6 +413,7 @@ function getIsNode(_did) {
                 if (savedNodes.length > 0) {
                     for (var i=0; i<savedNodes.length; i++) {
                         var node = savedNodes[i].did;
+                        console.log("savedNodes", node);
                         if (node.toLowerCase() == _did.toLowerCase()) {
                             isnode = true;
                             break;
@@ -374,6 +439,7 @@ function onCheckboxClicked() {
     console.log(this.id, this.checked);
     if (this.checked == true) {
         sensors.push(this.id);
+        //console.log(this.id.substr(3));
     } else {
         if (sensors.indexOf(this.id) != -1) {
             sensors.splice(sensors.indexOf(this.id), 1);

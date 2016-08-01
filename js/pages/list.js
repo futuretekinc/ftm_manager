@@ -313,7 +313,7 @@ function removeNode() {
         success: function (json) {
             console.log(json.result);
             if (json.result == "success") {
-                //window.location.reload();
+                window.location.reload();
             } else {
                 alert("failed");
             }
