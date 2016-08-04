@@ -10,7 +10,7 @@ function init() {
     $.li18n.currentLocale = 'kr';
     document.getElementById("menu_register").innerHTML = _t('register');
     document.getElementById("menu_list").innerHTML = _t("list");
-    document.getElementById("search_label").innerHTML = _t("mac") + " :";
+    //document.getElementById("search_label").innerHTML = _t("mac") + " :";
     document.getElementById("btn_search").innerHTML = _t("search");
     document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
     document.getElementById("menu_sensors").innerHTML = _t('sensors');
@@ -243,53 +243,6 @@ function getEps(_eps, _isAll, _epCount) {
 
 $('#btn_register').click(function addSensorList() {
     console.log("센서 등록");
-    /*for (var i=0; i<sensorNodes.length; i++) {
-        //var did = this.id.substr(9);
-        var did = sensorNodes[i];
-        var isSavedNode = getIsNode(did);
-        console.log("getIsNode(did)", isSavedNode, did);
-        
-        if (!isSavedNode) {
-            //http://10.0.1.18/cgi-bin/node?cmd=add&type=snmp&version=1&url=10.0.1.148&community=futuretek&mib=fte.mib
-            // 센서노드가 등록이 안되어 있으면 최초 한번 등록
-            $.ajax ({
-                type:"get",
-                url:"/cgi-bin/discovery?cmd=nodes",
-                async:false,
-                dataType:"json",
-                success:function(json) {
-                    var result = json.result;
-                    
-                    if (result == "success") {
-                        var nodes = json.nodes;
-                        $.each(nodes, function(index, node) {
-                            console.log(did.toLowerCase(), node.did.toLowerCase());
-                            if (did.toLowerCase() == node.did.toLowerCase()) {
-                                $.ajax ({
-                                    type:"get",
-                                    url:"/cgi-bin/node?cmd=add&did=" + did + "&type=" + node.type + "&version=" + node.snmp.version + "&url=" + node.snmp.url + "&community=" + node.snmp.community + "&mib=" + node.snmp.mib,
-                                    async:false,
-                                    dataType:"json",
-                                    success:function(json) {
-                                        var result = json.result;
-                                        console.log("/cgi-bin/node?cmd=add", result); 
-                                        if (result == "success") {
-
-                                        } else {
-                                            console.log("failed");
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    } else {
-                        console.log("failed");
-                    }
-                }
-            });
-        }
-    }*/
-    //return;
     // 센서노드 여부 확인 후 센서 등록.
     $.each (sensors, function (index, value){
 
@@ -340,7 +293,7 @@ $('#btn_register').click(function addSensorList() {
             });
         }    
 
-        //==================================================
+        //==============================================================================
         var type = document.getElementById("tr_" + value.substr(3)).cells[2].innerHTML;
         var name = document.getElementById("name_" + value.substr(3)).value;
         var interval = document.getElementById("interval_" + value.substr(3)).value;
@@ -369,6 +322,7 @@ $('#btn_register').click(function addSensorList() {
                         state = false;
                     }
 
+                    /* // 등록시 센서 상태를 on으로 설정한다.
                     $.ajax ({
                         type:"get",
                         url:"/cgi-bin/ep?cmd=set&epid=" + json.ep.epid + "&enable=" + state,
@@ -383,7 +337,7 @@ $('#btn_register').click(function addSensorList() {
                                 alert("failed");
                             }
                         }
-                    });
+                    });*/
 
                     removeList(value.substr(3));
                 } else {
@@ -637,6 +591,8 @@ function makeBody(_tbody, _ep) {
     var input_tf = document.createElement("input");
     input_tf.setAttribute("id", "interval_" + _ep.epid);
     input_tf.setAttribute("type", "number");
+    input_tf.setAttribute("min", "0");
+    input_tf.setAttribute("max", "60");
     input_tf.setAttribute("class", "form-control");
     input_tf.setAttribute("style", "width: 100%; height: 100%; border:0");
     input_tf.value = _ep.interval;

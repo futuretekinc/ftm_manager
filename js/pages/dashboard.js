@@ -193,7 +193,7 @@ function makeBody(_tbody, _eps) {
         $("#modal_table tr:not(:first)").remove();
         var modal_tbody = document.getElementById("modal_tbody");
         datas = [];
-
+        
         var begin = Math.round(new Date().getTime()/1000);
         var end = begin - 3600;
 
@@ -201,7 +201,7 @@ function makeBody(_tbody, _eps) {
 
         $.ajax ({
             type:"get",
-            url:"/cgi-bin/data?cmd=get&epid=" + _eps.epid + "&begin=" + begin + "&end=" + end,//"&index=0&count=60",
+            url:"/cgi-bin/data?cmd=get&epid=" + _eps.epid + "&index=0&count=100", //"&begin=" + begin + "&end=" + end
             async:false,
             dataType:"json",
             success:function(json) {
