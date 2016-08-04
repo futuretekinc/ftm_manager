@@ -67,6 +67,10 @@
 
         <div id="page-wrapper" style="width:970px; max-width: none !important;">
             <br>
+            <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                ※ MAC 주소 혹은 아이피를 입력해 주세요.
+            </div>
             <!-- <ul class="nav nav-tabs">
                 <li role="presentation" class="active" id="mac_tab"><a id="mac_search" href="#">맥으로 검색</a></li>
                 <li role="presentation" id="ip_tab"><a id="ip_search" href="#">아이피로 검색</a></li>
@@ -77,7 +81,7 @@
                     <form class="form-inline">
                         <div class="form-group">
                             <label for="inputMac" id="search_label"></label>
-                            <input type="text" class="form-control" id="inputMac"> <!-- placeholder="비워두면 전체검색"> -->
+                            <input type="text" class="form-control" id="inputMac" placeholder="Mac or IP">
                         </div>
                         <button type="button" class="btn btn-info" id="btn_search" data-loading-text="검색중..." autocomplete="off"></button>
                         <button type="button" class="btn btn-success" id="btn_register" disabled></button>
