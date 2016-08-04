@@ -259,7 +259,7 @@ function makeBody(_tbody, _rules) {
             dataType:"json",
             success:function(json){
                 var action = json.action;
-                console.log(action);
+                console.log(action.params);
                 document.getElementById("modal_action_title").innerHTML = action.id;
                 document.getElementById("modify_action_name").value = action.name;
                 document.getElementById("modify_action_value").value = action.action.value;
@@ -360,9 +360,58 @@ function modifyRule() {
 function removeRule() {
     
     // 센서의 삭제할 수 있다.
-    var id = document.getElementById("modal_rule_title").innerHTML;
+    var id = document.getElementById("rule_id").value;
     console.log("id =", id);
 
+
+    $.ajax ({
+        type:"get",
+        url:"/cgi-bin/rule?cmd=get&id=" + id,
+        async:false,
+        dataType:"json",
+        success:function(json){
+            var rule = json.rule;
+            console.log(rule.params.actions, rule.params.triggers);
+
+            // 액션 삭제
+            $.each(rule.params.actions, function(index, actionID) {
+                $.ajax ({
+                    type:"get",
+                    url:"/cgi-bin/action?cmd=del&id=" + actionID,
+                    async:false,
+                    dataType:"json",
+                    success: function (json) {
+                        console.log(json.result);
+                        if (json.result == "success") {
+                            console.log("action delete success");
+                        } else {
+                            alert("failed");
+                        }
+                    }
+                }); 
+            });
+
+            // 트리거 삭제
+            $.each(rule.params.triggers, function(index, triggerID) {
+                $.ajax ({
+                    type:"get",
+                    url:"/cgi-bin/trigger?cmd=del&id=" + triggerID,
+                    async:false,
+                    dataType:"json",
+                    success: function (json) {
+                        console.log(json.result);
+                        if (json.result == "success") {
+                            console.log("trigger delete success");
+                        } else {
+                            alert("failed");
+                        }
+                    }
+                }); 
+            });
+        }
+    });
+
+    // 액션, 트리거 삭제후 룰을 삭제한다.
     $.ajax ({
         type:"get",
         url:"/cgi-bin/rule?cmd=del&id=" + id,
@@ -491,174 +540,6 @@ $('#modal_btn_rule_add').click(function(){
     $("#modal_rule_add").modal("hide");
 });
 
-/*function loadTriggerList () {
-    $.ajax ({
-        type:"get",
-        url:"/cgi-bin/trigger?cmd=list&field1=all",
-        async:false,
-        dataType:"json",
-        success:response_trigger_list
-    });
-}
-
-function response_trigger_list(json) {
-    console.log(json);
-    var triggers = json.triggers;
-
-    $.each(triggers, function(key){
-        console.log("id :", triggers[key].id, "type :", triggers[key].type, "name :", triggers[key].name, "epid :", triggers[key].epid, "contidion_detectTime :", triggers[key].contidion.detectTime, "contidion_holdTime :", triggers[key].contidion.holdTime, "contidion_value :", triggers[key].contidion.value);
-        //var tbody = makePanel(triggers[key].id);
-        //var tbody = document.getElementById("trigger_list");
-        //makeBody(tbody, triggers[key]);
-    });
-}
-
-function makePanel(_mac) {
-
-    if (document.getElementById("row_" + _mac)) {
-        //console.log("있음");
-        return document.getElementById("tbody_" + _mac);
-    }
-
-    // 패널을 추가할 row 생성
-    var row = document.createElement("div");
-    row.setAttribute("id", "row_" + _mac);
-    row.setAttribute("class", "row");
-
-    var col_lg_12 = document.createElement("div");
-    col_lg_12.setAttribute("class", "col-lg-12");
-
-    // 패널 생성
-    var panel = document.createElement("div");
-    panel.setAttribute("class", "panel panel-green");
-
-    // 패널 헤더
-    var panel_header = document.createElement("div");
-    panel_header.setAttribute("class", "panel-heading");
-    panel_header.innerHTML = _mac +  " ";
-
-    // 헤더에 수정 버튼 생성
-    var btn_modify = document.createElement("button");
-    btn_modify.setAttribute("class", "btn btn-default btn-xs");
-    btn_modify.setAttribute("type", "button");
-    btn_modify.setAttribute("id", "btn_" + _mac);
-
-    // 버튼의 설정 아이콘 생성.
-    var span = document.createElement("span");
-    span.setAttribute("class", "glyphicon glyphicon-cog");
-
-    // btn_modify.appendChild(span);
-    // btn_modify.addEventListener("click", function(){
-
-    //     $.ajax ({
-    //         type:"get",
-    //         url:"/cgi-bin/node?cmd=get&did=" + _mac,
-    //         async:false,
-    //         dataType:"json",
-    //         success:response_node_info
-    //     });
-    //     console.log(this.id);
-    // });
-    // panel_header.appendChild(btn_modify);
-
-
-    //패널 안에 센서 리스트들 테이블로 구성
-    var table = document.createElement("table");
-    table.setAttribute("class", "table table-bordered");
-
-    var thead = document.createElement("thead");
-    var thead_tr = document.createElement("tr");
-    thead.appendChild(thead_tr);
-
-    var thNames = ["name", "id", "type", "epid", "value", "modify"];
-    //var className = ["col-sm-1", "col-sm-2", "col-sm-2", "col-sm-2", "col-sm-1", "col-sm-1"];
-
-    for (var i=0; i<thNames.length; i++) {
-        var th = document.createElement("th");
-        //th.setAttribute("class", className[i]);
-        thead_tr.appendChild(th).innerHTML = thNames[i];
-    }
-
-    table.appendChild(thead);
-
-
-    var tbody = document.createElement("tbody");
-    tbody.setAttribute("id", "tbody_" + _mac);
-    table.appendChild(tbody);
-
-    row.appendChild(col_lg_12);
-    col_lg_12.appendChild(panel);
-    panel.appendChild(panel_header);
-    panel.appendChild(table);
-
-    document.getElementById("page-wrapper").appendChild(row);
-
-    return tbody;
-}
-
-/*function response_node_info(json) {
-    document.getElementById("modal_node_title").innerHTML = json.did;
-    document.getElementById("node_location").value = json.location;
-    document.getElementById("node_interval").value = json.interval;
-    document.getElementById("node_type").value = json.type;
-    document.getElementById("node_timeout").value = json.timeout;
-    document.getElementById("node_url").value = json.snmp.url;
-    $("#modal_node_config").modal();
-}
-
-function makeBody(_tbody, _triggers) {
-
-    var tbody_tr = document.createElement("tr");
-    _tbody.appendChild(tbody_tr);
-
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.name;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.id;
-    tbody_tr.setAttribute("id", "tr_" + _triggers.id);
-
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.type;
-    
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.epid;
-    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.contidion.detectTime;
-    //tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.contidion.holdTime;
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = _triggers.contidion.value;
-
-    var btn_modify = document.createElement("button");
-    btn_modify.setAttribute("class", "btn btn-danger btn-xs");
-    btn_modify.setAttribute("type", "button");
-    btn_modify.setAttribute("data-dismiss", "modal");
-    btn_modify.setAttribute("id", "btn_" + _triggers.id);
-    btn_modify.appendChild(document.createTextNode("Modify"));
-    btn_modify.addEventListener("click", function(){
-        console.log(this.id);
-        var id = this.id.substr(4);
-        $.ajax ({
-            type:"get",
-            url:"/cgi-bin/trigger?cmd=get&id=" + id,
-            async:false,
-            dataType:"json",
-            success:function(json){
-                var trigger = json.trigger;
-                console.log(trigger);
-                document.getElementById("modal_trigger_title").innerHTML = trigger.id;
-                document.getElementById("trigger_name").value = trigger.name;
-                // document.getElementById("trigger_detect").value = trigger.contidion.detectTime;
-                // document.getElementById("trigger_hold").value = trigger.contidion.holdTime;
-                document.getElementById("trigger_value").value = trigger.contidion.value;
-                //document.getElementById("trigger_lower").value = trigger.name;
-                //document.getElementById("trigger_upper").value = trigger.name;
-            }
-        });
-
-        $("#modal_trigger_config").modal();
-    });
-    tbody_tr.appendChild(document.createElement("th")).appendChild(btn_modify);
-}
-
-$("#modal_btn_trigger_delete").click(function(){
-    removeTrigger();
-    $("#modal_trigger_config").modal("hide");
-});
-*/
 $("#modal_btn_trigger_modify").click(function(){
     modifyTrigger();
     $("#modal_trigger_config").modal("hide");
