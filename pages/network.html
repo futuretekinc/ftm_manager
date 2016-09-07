@@ -41,7 +41,7 @@
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li>
+                        <!-- <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 기본정보<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
@@ -51,7 +51,9 @@
                                     <a href="network/network_setting.html">설정</a>
                                 </li>
                             </ul>
-                            <!-- /.nav-second-level -->
+                        </li> -->
+                        <li>
+                            <a href="network.html"><i class="fa fa-table fa-fw"></i> 기본정보</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> LTE<span class="fa arrow"></span></a>
@@ -92,42 +94,95 @@
 
         <div id="page-wrapper">
             <div class="row">
-                <div class="col-lg-8">
-                    <h3 class="page-header">WAN</h3>
-                    <table class="table table-bordered" id="table_wan">
-                        <thead>
-                        <tr>
-                            <th id="th_port">Port</th>
-                            <th id="th_ip">IP Address</th>
-                            <th id="th_subnet">Subnet Mask</th>
-                            <th id="th_mac">Mac Address</th>
-                        </tr>
-                        </thead>
-
-                    </table>
+                <div class="container col-xs-offset-0" style="width: 400px;">
+                    <h3 class="page-header">기본 외부망</h3>
+                    <div class="form-group form-inline">
+                        <label for="interface">인터페이스 :</label>
+                        <select class="form-control pull-right" id="interface">
+                            
+                        </select>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="dhcp">자동으로 주소 받기 :</label>
+                        <input class="form-control pull-right" type="checkbox" id="dhcp">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="ip">IP 주소 :</label>
+                        <input class="form-control pull-right" type="text" id="ip">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="subnet">서브넷 마스크 :</label>
+                        <input class="form-control pull-right" type="text" id="subnet">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="gateway">기본 게이트웨이 :</label>
+                        <input class="form-control pull-right" type="text" id="gateway">
+                    </div>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
 
             <div class="row">
-                <div class="col-lg-8">
-                    <h3 class="page-header">LAN</h3>
-                    <table class="table table-bordered" id="table_lan">
-                        <thead>
-                        <tr>
-                            <th id="th_port2">Port</th>
-                            <th id="th_ip2">IP Address</th>
-                            <th id="th_subnet2">Subnet Mask</th>
-                            <th id="th_mac2">Mac Address</th>
-                        </tr>
-                        </thead>
-
-                    </table>
+                <div class="container col-xs-offset-0" style="width: 400px;">
+                    <div class="form-group form-inline">
+                        <input class="form-control pull-left" type="checkbox" id="sub_wan_cb" style="width:18px;height:18px;">
+                        <h3 class="page-header">&nbsp;보조 외부망</h3>
+                    </div>
+                    
+                    <div class="form-group form-inline">
+                        <label for="interface_sub">인터페이스 :</label>
+                        <select class="form-control pull-right" id="interface_sub">
+                            
+                        </select>
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="dhcp_sub">자동으로 주소 받기 :</label>
+                        <input class="form-control pull-right" type="checkbox" id="dhcp_sub">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="ip_sub">IP 주소 :</label>
+                        <input class="form-control pull-right" type="text" id="ip_sub">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="subnet_sub">서브넷 마스크 :</label>
+                        <input class="form-control pull-right" type="text" id="subnet_sub">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="gateway_sub">기본 게이트웨이 :</label>
+                        <input class="form-control pull-right" type="text" id="gateway_sub">
+                    </div>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
             <!-- /.row -->
+
+             <div class="row">
+                <div class="container col-xs-offset-0" style="width: 400px;">
+                    <h3 class="page-header">내부망</h3>
+                    <div class="form-group form-inline">
+                        <label for="ip_lan">IP 주소 :</label>
+                        <input class="form-control pull-right" type="text" id="ip_lan">
+                    </div>
+                    <div class="form-group form-inline">
+                        <label for="subnet_lan">서브넷 마스크 :</label>
+                        <input class="form-control pull-right" type="text" id="subnet_lan">
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            </br>
+            <div class="row">
+                <div class="container col-xs-offset-0" style="width: 400px;">
+                    <div class="form-group">
+                        <div>
+                            <button type="button" class="btn btn-default pull-right" onclick="onApply();">수정</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
         </div>
         <!-- /#page-wrapper -->
     </div>

@@ -8,15 +8,6 @@ function init() {
     document.getElementById("menu_clouds").innerHTML = _t('clouds');
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
-
-	document.getElementById("th_port").innerHTML = _t('port');
-    document.getElementById("th_ip").innerHTML = _t('ip');
-    document.getElementById("th_subnet").innerHTML = _t('subnet');
-    document.getElementById("th_mac").innerHTML = _t('mac');
-	document.getElementById("th_port2").innerHTML = _t('port');
-    document.getElementById("th_ip2").innerHTML = _t('ip');
-    document.getElementById("th_subnet2").innerHTML = _t('subnet');
-    document.getElementById("th_mac2").innerHTML = _t('mac');
 }
 
 $(document).ready(function(){
@@ -27,42 +18,148 @@ $(document).ready(function(){
 function loadNetworkData() {
     $.ajax({
         type:"get",
-        url:"/cgi-bin/network?cmd=status",
-        dataType:"xml",
-        success : function(xml) {
+        url:"/test_network_info.json",
+        dataType:"json",
+        success : function(json) {
             // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
             // TODO
-            $(xml).find("ETH").each(function(){
-                //console.log($(this).find("INDEX").text());
-                //console.log($(this).find("IFNAME").text());
-                //console.log($(this).find("IPADDR").text());
-                //console.log($(this).find("NETMASK").text());
-                //console.log($(this).find("MACADDR").text());
+            //console.log(json);
 
-                if($(this).find("IFNAME").text() == "br-lan") {
-                    makeBody("table_lan", $(this));
-                }
-                if($(this).find("IFNAME").text() == "eth0") {
-                    makeBody("table_wan", $(this));
-                }
+            for (var i=0; i<json.interface[0].port.length; i++) {
+                var option = document.createElement("option");
+                document.getElementById("interface").appendChild(option);
+                document.getElementById("interface").addEventListener("change", onChangeInterface);
+                option.innerHTML = json.interface[0].port[i];;
+            }
 
-            });
+            document.getElementById("ip").value         = json.interface[0].ipaddr;
+            document.getElementById("subnet").value     = json.interface[0].netmask;
+            document.getElementById("gateway").value    = json.interface[0].gateway;
+
+            for (var i=0; i<json.interface[1].port.length; i++) {
+                var option = document.createElement("option");
+                document.getElementById("interface_sub").appendChild(option);
+                document.getElementById("interface_sub").addEventListener("change", onChangeInterface);
+                option.innerHTML = json.interface[1].port[i];;
+            }
+
+            if (json.interface[0].proto == "auto") {
+                document.getElementById("dhcp").checked = true;
+
+            }
+            if (json.interface[1].proto == "auto") {
+                document.getElementById("dhcp_sub").checked = true;
+                document.getElementById("ip_sub").disabled = true;
+                document.getElementById("subnet_sub").disabled = true;
+                document.getElementById("gateway_sub").disabled = true;
+            }
+
+            document.getElementById("dhcp").addEventListener("change", onCheckboxClicked);
+            document.getElementById("dhcp_sub").addEventListener("change", onCheckboxClicked);
+
+            document.getElementById("ip_lan").value         = json.interface[2].ipaddr;
+            document.getElementById("subnet_lan").value     = json.interface[2].netmask;
+            
         },
         error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+            alert("에러발생");
         }
     });
 }
 
-// Network Status 테이블 추가
-function makeBody(_tableName, xml) {
-    var tbody = document.createElement("tbody");
-    var tbody_tr = document.createElement("tr");
-    document.getElementById(_tableName).appendChild(tbody);
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = xml.find("IFNAME").text();
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = xml.find("IPADDR").text();
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = xml.find("NETMASK").text();
-    tbody_tr.appendChild(document.createElement("td")).innerHTML = xml.find("MACADDR").text();
-    tbody.appendChild(tbody_tr);
+function onChangeInterface() {
+    //console.log(this.value);
+    if (this.id == "interface") {
+        if (this.value == "lte0")
+        {
+            changeState("", true);
+        } else {
+            changeState("", false);
+        }
+    } else {
+        if (this.value == "lte0")
+        {
+            changeState("_sub", true);
+        } else {
+            changeState("_sub", false);
+        }
+    }
+}
+
+function changeState(_common, _isTrue) {
+    document.getElementById("dhcp" + _common).disabled = _isTrue;
+    document.getElementById("dhcp" + _common).checked = _isTrue;
+    document.getElementById("ip" + _common).disabled = _isTrue;
+    document.getElementById("subnet" + _common).disabled = _isTrue;
+    document.getElementById("gateway" + _common).disabled = _isTrue;
+}
+
+function onCheckboxClicked() {
+    //console.log("onCheckboxClicked", this.id.substr(4));
+    if (this.checked == true) {
+        document.getElementById("ip" + this.id.substr(4)).disabled = true;
+        document.getElementById("subnet" + this.id.substr(4)).disabled = true;
+        document.getElementById("gateway" + this.id.substr(4)).disabled = true;
+    } else {
+        document.getElementById("ip" + this.id.substr(4)).disabled = false;
+        document.getElementById("subnet" + this.id.substr(4)).disabled = false;
+        document.getElementById("gateway" + this.id.substr(4)).disabled = false;
+    }
+}
+
+function onApply() {
+    var isSubWan = document.getElementById("sub_wan_cb").checked;
+    var param = "";
+
+    param += "&type0=wan"
+    if (document.getElementById("dhcp").checked) {
+        param += "&proto0=" + "dhcp";
+    } else {
+        param += "&proto0=" + "static";
+        param += "&ip0=" + document.getElementById("ip").value;
+        param += "&netmask0=" + document.getElementById("subnet").value;
+        param += "&gateway0=" + document.getElementById("gateway").value;
+    }
+    param += "&port0=" + document.getElementById("interface").value;
+
+    if (isSubWan)
+    {
+        param += "&type1=wan";
+
+        if (document.getElementById("dhcp_sub").checked) {
+            param += "&proto1=" + "auto";
+        } else {
+            param += "&proto1=" + "static";
+        }
+        param += "&port1=" + document.getElementById("interface_sub").value;
+
+        param += "&type2=lan";
+        param += "&ip2=" + document.getElementById("ip_lan").value;
+        param += "&netmask2=" + document.getElementById("subnet_lan").value;
+        param += "&port2=all";
+    
+    } else {
+
+        param += "&type1=lan";
+        param += "&ip1=" + document.getElementById("ip_lan").value;
+        param += "&netmask1=" + document.getElementById("subnet_lan").value;
+        param += "&port1=all";
+    }
+    
+    console.log(param);
+
+    $.ajax({
+        type:"get",
+        url:"/cgi-bin/network?cmd=set" + param,
+        dataType:"json",
+        success : function(json) {
+            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
+            // TODO
+            console.log(json.result);
+            alert(json.result);
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+        }
+    });
 }

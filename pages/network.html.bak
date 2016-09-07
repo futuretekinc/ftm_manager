@@ -6,21 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title></title>
-    <link href="../../css/bootstrap/bootstrap.min.css" rel="stylesheet">
+	<link href="../css/bootstrap/bootstrap.min.css" rel="stylesheet">
     <!-- MetisMenu CSS -->
-    <link href="../../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+    <link href="../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link href="../../dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
     <!-- Custom Fonts -->
-    <link href="../../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div id="wrapper">
@@ -34,21 +27,21 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="../dashboard.html">FTM Manager System</a>
+                <a class="navbar-brand" href="dashboard.html">FTM Manager System</a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a href="../dashboard.html">Dashboard</a></li>
-                <li><a href="../sensors.html">Sensors</a></li>
-                <li><a href="../clouds.html">Clouds</a></li>
-                <li class="active"><a href="lte_setting.html">Network</a></li>
-                <li><a href="../system.html">System</a></li>
+                <li><a href="dashboard.html" id="menu_dashboard"></a></li>
+                <li><a href="sensors.html" id="menu_sensors"></a></li>
+                <li><a href="clouds.html" id="menu_clouds"></a></li>
+                <li class="active"><a href="network.html" id="menu_network"></a></li>
+                <li><a href="system.html" id="menu_system"></a></li>
             </ul>
 
             <!-- 왼쪽 사이드바 -->
             <div class="navbar-default sidebar" role="navigation">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <!-- <li>
+                        <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> 기본정보<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
@@ -58,39 +51,37 @@
                                     <a href="network/network_setting.html">설정</a>
                                 </li>
                             </ul>
-                        </li> -->
-                        <li>
-                            <a href="../network.html"><i class="fa fa-table fa-fw"></i> 기본정보</a>
+                            <!-- /.nav-second-level -->
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> LTE<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="lte_status.html">상태정보</a>
+                                    <a href="network/lte_status.html">상태정보</a>
                                 </li>
                                 <li>
-                                    <a href="lte_setting.html">APN 설정</a>
+                                    <a href="network/lte_setting.html">APN 설정</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="wifi_setting.html"><i class="fa fa-table fa-fw"></i> WIFI</a>
+                            <a href="network/wifi_setting.html"><i class="fa fa-table fa-fw"></i> WIFI</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-wrench fa-fw"></i> DHCP<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="dhcp_status.html">상태정보</a>
+                                    <a href="network/dhcp_status.html">상태정보</a>
                                 </li>
                                 <li>
-                                    <a href="dhcp_setting.html">설정</a>
+                                    <a href="network/dhcp_setting.html">설정</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
                         <li>
-                            <a href="firewall_setting.html"><i class="fa fa-table fa-fw"></i> Firewall</a>
+                            <a href="network/firewall_setting.html"><i class="fa fa-table fa-fw"></i> Firewall</a>
                         </li>
                     </ul>
                 </div>
@@ -102,29 +93,55 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-8">
-                    <h3 class="page-header">APN Setting</h3>
-                    <form class="form-inline">
-                        <div class="form-group">
-                            <label>APN :</label>
-                            <input type="text" class="form-control" id="apn" style="width: 350px;">
-                        </div>
-                        <button type="button" class="btn btn-default" onclick="setAPN();">Modify</button>
-                    </form>
+                    <h3 class="page-header">WAN</h3>
+                    <table class="table table-bordered" id="table_wan">
+                        <thead>
+                        <tr>
+                            <th id="th_port">Port</th>
+                            <th id="th_ip">IP Address</th>
+                            <th id="th_subnet">Subnet Mask</th>
+                            <th id="th_mac">Mac Address</th>
+                        </tr>
+                        </thead>
+
+                    </table>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
+            <!-- /.row -->
+
+            <div class="row">
+                <div class="col-lg-8">
+                    <h3 class="page-header">LAN</h3>
+                    <table class="table table-bordered" id="table_lan">
+                        <thead>
+                        <tr>
+                            <th id="th_port2">Port</th>
+                            <th id="th_ip2">IP Address</th>
+                            <th id="th_subnet2">Subnet Mask</th>
+                            <th id="th_mac2">Mac Address</th>
+                        </tr>
+                        </thead>
+
+                    </table>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
         </div>
         <!-- /#page-wrapper -->
     </div>
     <!-- /#wrapper -->
 
     <!-- jQuery -->
-    <script src="../../bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="../../js/bootstrap/bootstrap.min.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="../js/bootstrap/bootstrap.min.js"></script>
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="../../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+	<script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->
-    <script src="../../dist/js/sb-admin-2.js"></script>
-    <script src="../../js/pages/lte_setting.js"></script>
+    <script src="../dist/js/sb-admin-2.js"></script>
+    <script src="../js/pages/network.js"></script>
+    <script src="../jquery.li18n.min.js"></script>
+    <script src="../lang.js"></script>
 </body>
 </html>
