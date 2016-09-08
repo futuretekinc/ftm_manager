@@ -18,7 +18,8 @@ $(document).ready(function(){
 function loadNetworkData() {
     $.ajax({
         type:"get",
-        url:"/test_network_info.json",
+        //url:"/test_network_info.json",
+        url:"cgi-bin/network?cmd=get",
         dataType:"json",
         success : function(json) {
             // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
@@ -43,10 +44,10 @@ function loadNetworkData() {
                 option.innerHTML = json.interface[1].port[i];;
             }
 
-            if (json.interface[0].proto == "auto") {
+            if (json.interface[0].proto == "dhcp") {
                 document.getElementById("dhcp").checked = true;
-
             }
+
             if (json.interface[1].proto == "auto") {
                 document.getElementById("dhcp_sub").checked = true;
                 document.getElementById("ip_sub").disabled = true;
@@ -147,6 +148,7 @@ function onApply() {
     }
     
     console.log(param);
+    //return;
 
     $.ajax({
         type:"get",
