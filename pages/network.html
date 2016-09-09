@@ -104,7 +104,7 @@
                     </div>
                     <div class="form-group form-inline">
                         <label for="dhcp">자동으로 주소 받기 :</label>
-                        <input class="form-control pull-right" type="checkbox" id="dhcp">
+                        <input class="form-control pull-right" type="checkbox" id="dhcp" style="width:18px;height:18px;">
                     </div>
                     <div class="form-group form-inline">
                         <label for="ip">IP 주소 :</label>
@@ -129,28 +129,29 @@
                         <input class="form-control pull-left" type="checkbox" id="sub_wan_cb" style="width:18px;height:18px;">
                         <h3 class="page-header">&nbsp;보조 외부망</h3>
                     </div>
-                    
-                    <div class="form-group form-inline">
-                        <label for="interface_sub">인터페이스 :</label>
-                        <select class="form-control pull-right" id="interface_sub">
-                            
-                        </select>
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="dhcp_sub">자동으로 주소 받기 :</label>
-                        <input class="form-control pull-right" type="checkbox" id="dhcp_sub">
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="ip_sub">IP 주소 :</label>
-                        <input class="form-control pull-right" type="text" id="ip_sub">
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="subnet_sub">서브넷 마스크 :</label>
-                        <input class="form-control pull-right" type="text" id="subnet_sub">
-                    </div>
-                    <div class="form-group form-inline">
-                        <label for="gateway_sub">기본 게이트웨이 :</label>
-                        <input class="form-control pull-right" type="text" id="gateway_sub">
+                    <div id="sub_container">
+                        <div class="form-group form-inline">
+                            <label for="interface_sub">인터페이스 :</label>
+                            <select class="form-control pull-right" id="interface_sub">
+                                
+                            </select>
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="dhcp_sub">자동으로 주소 받기 :</label>
+                            <input class="form-control pull-right" type="checkbox" id="dhcp_sub" style="width:18px;height:18px;">
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="ip_sub">IP 주소 :</label>
+                            <input class="form-control pull-right" type="text" id="ip_sub">
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="subnet_sub">서브넷 마스크 :</label>
+                            <input class="form-control pull-right" type="text" id="subnet_sub">
+                        </div>
+                        <div class="form-group form-inline">
+                            <label for="gateway_sub">기본 게이트웨이 :</label>
+                            <input class="form-control pull-right" type="text" id="gateway_sub">
+                        </div>
                     </div>
                 </div>
                 <!-- /.col-lg-12 -->

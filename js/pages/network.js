@@ -8,6 +8,8 @@ function init() {
     document.getElementById("menu_clouds").innerHTML = _t('clouds');
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
+
+    document.getElementById("sub_wan_cb").addEventListener("change", subWanCBClicked);
 }
 
 $(document).ready(function(){
@@ -18,13 +20,15 @@ $(document).ready(function(){
 function loadNetworkData() {
     $.ajax({
         type:"get",
-        //url:"/test_network_info.json",
-        url:"cgi-bin/network?cmd=get",
+        url:"/test_network_info.json",
+        //url:"/cgi-bin/network?cmd=get",
         dataType:"json",
-        success : function(json) {
+        success : function(_json) {
             // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
             // TODO
             //console.log(json);
+
+            var json = _json.network;
 
             for (var i=0; i<json.interface[0].port.length; i++) {
                 var option = document.createElement("option");
@@ -37,29 +41,58 @@ function loadNetworkData() {
             document.getElementById("subnet").value     = json.interface[0].netmask;
             document.getElementById("gateway").value    = json.interface[0].gateway;
 
-            for (var i=0; i<json.interface[1].port.length; i++) {
-                var option = document.createElement("option");
-                document.getElementById("interface_sub").appendChild(option);
-                document.getElementById("interface_sub").addEventListener("change", onChangeInterface);
-                option.innerHTML = json.interface[1].port[i];;
-            }
-
             if (json.interface[0].proto == "dhcp") {
                 document.getElementById("dhcp").checked = true;
             }
-
-            if (json.interface[1].proto == "auto") {
-                document.getElementById("dhcp_sub").checked = true;
-                document.getElementById("ip_sub").disabled = true;
-                document.getElementById("subnet_sub").disabled = true;
-                document.getElementById("gateway_sub").disabled = true;
+            
+            document.getElementById("dhcp").addEventListener("change", onCheckboxClicked);
+            if (json.interface[0].proto == "dhcp") {
+                document.getElementById("dhcp").checked = true;
+                document.getElementById("ip").disabled = true;
+                document.getElementById("subnet").disabled = true;
+                document.getElementById("gateway").disabled = true;
             }
 
-            document.getElementById("dhcp").addEventListener("change", onCheckboxClicked);
-            document.getElementById("dhcp_sub").addEventListener("change", onCheckboxClicked);
 
-            document.getElementById("ip_lan").value         = json.interface[2].ipaddr;
-            document.getElementById("subnet_lan").value     = json.interface[2].netmask;
+            if (json.interface[1].type == "wan") {
+                
+                document.getElementById("sub_wan_cb").checked = true;
+
+                for (var i=0; i<json.interface[1].port.length; i++) {
+                    var option = document.createElement("option");
+                    document.getElementById("interface_sub").appendChild(option);
+                    document.getElementById("interface_sub").addEventListener("change", onChangeInterface);
+                    option.innerHTML = json.interface[1].port[i];;
+                }
+    
+                document.getElementById("dhcp_sub").addEventListener("change", onCheckboxClicked);
+                
+                if (json.interface[1].proto == "auto") {
+                    document.getElementById("dhcp_sub").checked = true;
+                    document.getElementById("ip_sub").disabled = true;
+                    document.getElementById("subnet_sub").disabled = true;
+                    document.getElementById("gateway_sub").disabled = true;
+                }
+
+                document.getElementById("ip_lan").value         = json.interface[2].ipaddr;
+                document.getElementById("subnet_lan").value     = json.interface[2].netmask;
+            } else {
+
+                document.getElementById("sub_wan_cb").checked = false;
+
+                if (document.getElementById("sub_wan_cb").checked == true) {
+                    document.getElementById("sub_container").hidden = false;
+                } else {
+                    document.getElementById("sub_container").hidden = true;
+                }
+
+                document.getElementById("ip_lan").value         = json.interface[1].ipaddr;
+                document.getElementById("subnet_lan").value     = json.interface[1].netmask;
+            }
+            
+            
+
+            
             
         },
         error : function(xhr, status, error) {
@@ -108,6 +141,14 @@ function onCheckboxClicked() {
     }
 }
 
+function subWanCBClicked() {
+    if (this.checked == true) {
+        document.getElementById("sub_container").hidden = false;
+    } else {
+        document.getElementById("sub_container").hidden = true;
+    }
+}
+
 function onApply() {
     var isSubWan = document.getElementById("sub_wan_cb").checked;
     var param = "";
@@ -137,6 +178,7 @@ function onApply() {
         param += "&type2=lan";
         param += "&ip2=" + document.getElementById("ip_lan").value;
         param += "&netmask2=" + document.getElementById("subnet_lan").value;
+        param += "&proto2=static";
         param += "&port2=all";
     
     } else {
@@ -144,6 +186,7 @@ function onApply() {
         param += "&type1=lan";
         param += "&ip1=" + document.getElementById("ip_lan").value;
         param += "&netmask1=" + document.getElementById("subnet_lan").value;
+        param += "&proto1=static";
         param += "&port1=all";
     }
     
