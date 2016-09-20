@@ -29,50 +29,85 @@ function loadNetworkData() {
             //console.log(json);
 
             var json = _json.network;
+            var ports = json.port;
 
-            for (var i=0; i<json.interface[0].port.length; i++) {
-                var option = document.createElement("option");
-                document.getElementById("interface").appendChild(option);
-                document.getElementById("interface").addEventListener("change", onChangeInterface);
-                option.innerHTML = json.interface[0].port[i];;
+            for (var i=0; i<ports.length; i++)
+            {
+                //console.log(ports[i].name, ports[i].type, ports[i].wan);
+                if (ports[i].wan == "yes")
+                {
+                    console.log("wan yes ::: ", ports[i].name, i);
+                    var option1 = document.createElement("option");
+                    document.getElementById("interface").appendChild(option1);
+                    option1.innerHTML = ports[i].name;
+                    option1.setAttribute("value", i);
+
+                    var option2 = document.createElement("option");
+                    document.getElementById("interface_sub").appendChild(option2);
+                    option2.innerHTML = ports[i].name;
+                    option2.setAttribute("value", i);
+                }
+            }
+            document.getElementById("interface").addEventListener("change", onChangeInterface);
+            document.getElementById("interface_sub").addEventListener("change", onChangeInterface);
+
+            if (document.getElementById("interface").value == "0")
+            {
+                changeState("", true);
+                $("#interface_sub").val("1");
+            } else {
+                changeState("", false);
+                $("#interface_sub").val("0");
             }
 
-            document.getElementById("ip").value         = json.interface[0].ipaddr;
-            document.getElementById("subnet").value     = json.interface[0].netmask;
-            document.getElementById("gateway").value    = json.interface[0].gateway;
+            // for (var i=0; i<json.interface[0].port.length; i++) {
+            //     var option = document.createElement("option");
+            //     document.getElementById("interface").appendChild(option);
+            //     document.getElementById("interface").addEventListener("change", onChangeInterface);
+            //     option.innerHTML = json.interface[0].port[i];
 
-            if (json.interface[0].proto == "dhcp") {
-                document.getElementById("dhcp").checked = true;
+            // }
+            
+            if (json.interface[0].ipaddr != null) {
+                document.getElementById("ip").value         = json.interface[0].ipaddr;
+            }
+            if (json.interface[0].netmask != null) {
+                document.getElementById("subnet").value     = json.interface[0].netmask;
+            }
+            if (json.interface[0].gateway != null) {
+                document.getElementById("gateway").value    = json.interface[0].gateway;
             }
             
             document.getElementById("dhcp").addEventListener("change", onCheckboxClicked);
-            if (json.interface[0].proto == "dhcp") {
+            if (json.interface[0].proto == "dhcp" || json.interface[0].proto == "auto") {
                 document.getElementById("dhcp").checked = true;
                 document.getElementById("ip").disabled = true;
                 document.getElementById("subnet").disabled = true;
                 document.getElementById("gateway").disabled = true;
             }
 
+            document.getElementById("dhcp_sub").addEventListener("change", onCheckboxClicked);
+            if (json.interface[1].proto == "dhcp" || json.interface[1].proto == "auto") {
+                document.getElementById("dhcp_sub").checked = true;
+                document.getElementById("ip_sub").disabled = true;
+                document.getElementById("subnet_sub").disabled = true;
+                document.getElementById("gateway_sub").disabled = true;
+            }
 
             if (json.interface[1].type == "wan") {
                 
                 document.getElementById("sub_wan_cb").checked = true;
 
-                for (var i=0; i<json.interface[1].port.length; i++) {
-                    var option = document.createElement("option");
-                    document.getElementById("interface_sub").appendChild(option);
-                    document.getElementById("interface_sub").addEventListener("change", onChangeInterface);
-                    option.innerHTML = json.interface[1].port[i];;
-                }
+                // for (var i=0; i<json.interface[1].port.length; i++) {
+                //     var option = document.createElement("option");
+                //     document.getElementById("interface_sub").appendChild(option);
+                //     document.getElementById("interface_sub").addEventListener("change", onChangeInterface);
+                //     option.innerHTML = json.interface[1].port[i];;
+                // }
     
-                document.getElementById("dhcp_sub").addEventListener("change", onCheckboxClicked);
                 
-                if (json.interface[1].proto == "auto") {
-                    document.getElementById("dhcp_sub").checked = true;
-                    document.getElementById("ip_sub").disabled = true;
-                    document.getElementById("subnet_sub").disabled = true;
-                    document.getElementById("gateway_sub").disabled = true;
-                }
+                
+                
 
                 document.getElementById("ip_lan").value         = json.interface[2].ipaddr;
                 document.getElementById("subnet_lan").value     = json.interface[2].netmask;
@@ -89,11 +124,6 @@ function loadNetworkData() {
                 document.getElementById("ip_lan").value         = json.interface[1].ipaddr;
                 document.getElementById("subnet_lan").value     = json.interface[1].netmask;
             }
-            
-            
-
-            
-            
         },
         error : function(xhr, status, error) {
             alert("에러발생");
@@ -102,20 +132,31 @@ function loadNetworkData() {
 }
 
 function onChangeInterface() {
-    //console.log(this.value);
+    console.log("func | onChangeInterface | this.value =", this.value);
+
     if (this.id == "interface") {
-        if (this.value == "lte0")
+        if (this.value == "0")
         {
             changeState("", true);
+            changeState("_sub", false);
+            //$("#interface_sub").val("eth0").attr("selected", "selected");
+            $("#interface_sub").val("1");
         } else {
             changeState("", false);
+            changeState("_sub", true);
+            $("#interface_sub").val("0").attr("selected", "selected");
         }
     } else {
-        if (this.value == "lte0")
+        if (this.value == "0")
         {
             changeState("_sub", true);
+            changeState("", false);
+            //$("#interface").val("eth0").attr("selected", "selected");
+            $("#interface").val("1");
         } else {
             changeState("_sub", false);
+            changeState("", true);
+            $("#interface").val("0").attr("selected", "selected");
         }
     }
 }
@@ -155,43 +196,54 @@ function onApply() {
 
     param += "&type0=wan"
     if (document.getElementById("dhcp").checked) {
-        param += "&proto0=" + "dhcp";
+        if ($("#interface option:selected").text() == "usb0") {
+            param += "&proto0=" + "auto";
+        } else {
+            param += "&proto0=" + "dhcp";
+        }
     } else {
         param += "&proto0=" + "static";
-        param += "&ip0=" + document.getElementById("ip").value;
-        param += "&netmask0=" + document.getElementById("subnet").value;
-        param += "&gateway0=" + document.getElementById("gateway").value;
+        param += "&ip0=" + $("#ip").val();
+        param += "&netmask0=" + $("#subnet").val();
+        param += "&gateway0=" + $("#gateway").val();
     }
-    param += "&port0=" + document.getElementById("interface").value;
+    param += "&port0=" + $("#interface option:selected").text();
 
     if (isSubWan)
     {
         param += "&type1=wan";
 
         if (document.getElementById("dhcp_sub").checked) {
-            param += "&proto1=" + "auto";
+            if ($("#interface_sub option:selected").text() == "usb0") {
+                param += "&proto1=" + "auto";
+            } else {
+                param += "&proto1=" + "dhcp";
+            }
         } else {
             param += "&proto1=" + "static";
+            param += "&ip1=" + $("#ip_sub").val();
+            param += "&netmask1=" + $("#subnet_sub").val();
+            param += "&gateway1=" + $("#gateway_sub").val();
         }
-        param += "&port1=" + document.getElementById("interface_sub").value;
+        param += "&port1=" + $("#interface_sub option:selected").text();
 
         param += "&type2=lan";
-        param += "&ip2=" + document.getElementById("ip_lan").value;
-        param += "&netmask2=" + document.getElementById("subnet_lan").value;
+        param += "&ip2=" + $("#ip_lan").val();
+        param += "&netmask2=" + $("#subnet_lan").val();
         param += "&proto2=static";
         param += "&port2=all";
     
     } else {
 
         param += "&type1=lan";
-        param += "&ip1=" + document.getElementById("ip_lan").value;
-        param += "&netmask1=" + document.getElementById("subnet_lan").value;
+        param += "&ip1=" + $("#ip_lan").val();
+        param += "&netmask1=" + $("#subnet_lan").val();
         param += "&proto1=static";
         param += "&port1=all";
     }
     
     console.log(param);
-    //return;
+    return;
 
     $.ajax({
         type:"get",

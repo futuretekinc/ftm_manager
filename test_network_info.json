@@ -1,40 +1,16 @@
 {
-	"network": {
+	"network" : {
 		"port" : [
-			{ "name" : "lte0", "type" : "lte", "wan" : "yes", "lan" : "no"},
-			{ "name" : "eth0", "type" : "wired", "wan" : "yes", "lan" : "yes"},
-			{ "name" : "eth1", "type" : "wired", "wan" : "no", "lan" : "yes"},
-			{ "name" : "wifi0", "type" : "wireless", "wan" : "no", "lan" : "yes"}
+			{ "name":"usb0", "type":"lte", "wan":"yes", "lan":"no"},
+			{ "name":"eth0", "type":"wired", "wan":"yes", "lan":"yes"},
+			{ "name":"eth1", "type":"wired", "wan":"yes", "lan":"yes"}
 		],
+
 		"interface" : [
-			{
-				"type" : "wan",
-				"name" : "wan",
-				"mac" : "00:40:5c:ab:cd:01",
-				"proto" : "static",
-				"ipaddr" : "10.0.1.100",
-				"netmask" : "255.255.255.0",
-				"gateway" : "10.0.1.1",
-				"failover" : "active",
-				"port" : [ "eth0" ]
-			},
-			{
-				"type" : "wan",
-				"name" : "wan",
-				"proto" : "auto",
-				"failover" : "standby",
-				"port" : [ "lte0" ]
-			},
-			{
-				"type" : "lan",
-				"name" : "lan",
-				"mac" : "00:40:5c:ab:cd:02",
-				"proto" : "static",
-				"ipaddr" : "192.168.0.1",
-				"netmask" : "255.255.255.0",
-				"port" : ["eth1", "wifi0"]
-			}
+			{ "type":"wan", "name":"wan", "proto":"auto", "failover":"standby", "port":["usb0"] },
+			{ "type":"lan", "name":"lan", "proto":"static", "mac":"00:40:5C:8F:48:3A", "ipaddr":"192.168.1.1", "netmask":"255.255.255.0", "port":["eth0" , "eth1"] }
 		]
 	},
-	"result":"success"
+	
+	"result" : "success"
 }
