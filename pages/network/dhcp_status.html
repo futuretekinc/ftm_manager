@@ -37,11 +37,11 @@
                 <a class="navbar-brand" href="../dashboard.html">FTM Manager System</a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a href="../dashboard.html">Dashboard</a></li>
-                <li><a href="../sensors.html">Sensors</a></li>
-                <li><a href="../clouds.html">Clouds</a></li>
-                <li class="active"><a href="lte_status.html">Network</a></li>
-                <li><a href="../system.html">System</a></li>
+                <li><a href="../dashboard.html" id="menu_dashboard"></a></li>
+                <li><a href="../sensors.html" id="menu_sensors"></a></li>
+                <li><a href="../clouds.html" id="menu_clouds"></a></li>
+                <li class="active"><a href="lte_status.html" id="menu_network"></a></li>
+                <li><a href="../system.html" id="menu_system"></a></li>
             </ul>
 
             <!-- 왼쪽 사이드바 -->
@@ -102,7 +102,7 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="container col-xs-offset-0" style="width: 350px;">
-                    <h3 class="page-header">DHCP Server Information</h3>
+                    <h3 class="page-header" id="h_dhcp_info">DHCP Server Information</h3>
                     <table class="table table-bordered">
                         <thead>
                         <tr>
@@ -188,5 +188,7 @@
     <!-- Custom Theme JavaScript -->
     <script src="../../dist/js/sb-admin-2.js"></script>
     <script src="../../js/pages/dhcp_status.js"></script>
+    <script src="../../jquery.li18n.min.js"></script>
+    <script src="../../lang.js"></script>
 </body>
 </html>

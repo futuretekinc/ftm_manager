@@ -9,7 +9,7 @@ function init() {
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
 
-	document.getElementById("th_port").innerHTML = _t('port');
+    document.getElementById("th_port").innerHTML = _t('port');
     document.getElementById("th_ip").innerHTML = _t('ip');
     document.getElementById("th_subnet").innerHTML = _t('subnet');
     document.getElementById("th_mac").innerHTML = _t('mac');

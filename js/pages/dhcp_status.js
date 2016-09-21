@@ -6,15 +6,15 @@ $(document).ready(function(){
 });
 
 function init() {
-	$.li18n.currentLocale = 'kr';
+    $.li18n.currentLocale = 'kr';
     document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
     document.getElementById("menu_sensors").innerHTML = _t('sensors');
     document.getElementById("menu_clouds").innerHTML = _t('clouds');
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
 
-	document.getElementById("h_dhcp_info").innerHTML = _t('dhcp_info');
-
+    document.getElementById("h_dhcp_info").innerHTML = _t('dhcp_info');
+ 
     $.ajax({
         type:"get",
         url:"/cgi-bin/dhcp?cmd=status",

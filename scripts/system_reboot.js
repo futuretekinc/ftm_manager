@@ -10,6 +10,13 @@ $(document).ready(function(){
     document.getElementById("menu_clouds").innerHTML = _t('clouds');
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
+    
+    document.getElementById("info").innerHTML = _t('information');
+    document.getElementById("log").innerHTML = _t('log');
+    document.getElementById("restart").innerHTML = _t('restart');
+
+    document.getElementById("system_reboot").innerHTML = _t('system_reboot');
+    document.getElementById("reboot_message").innerHTML = _t('reboot_message');
 });
 
 function onInit()

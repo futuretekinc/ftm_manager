@@ -12,7 +12,20 @@ function init() {
     document.getElementById("menu_clouds").innerHTML = _t('clouds');
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
+    
+    document.getElementById("info").innerHTML = _t('information');
+    document.getElementById("log").innerHTML = _t('log');
+    document.getElementById("restart").innerHTML = _t('restart');
 
+    document.getElementById("model_label").innerHTML = _t('model');
+    document.getElementById("sn_label").innerHTML = _t('sn');
+    document.getElementById("hw_label").innerHTML = _t('hw_ver');
+    document.getElementById("modem_label").innerHTML = _t('modem_ver');
+    document.getElementById("information").innerHTML = _t('device_info');
+
+    
+
+    return;
     $.ajax({
         type:"get",
         url:"/cgi-bin/system?cmd=profile",
@@ -31,8 +44,8 @@ function init() {
             });
         },
         error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+            alert("에러발생");
+            //window.location.href="/";
         }
     });
 }

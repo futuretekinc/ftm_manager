@@ -18,6 +18,12 @@ function init() {
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
     
+    document.getElementById("info").innerHTML = _t('information');
+    document.getElementById("log").innerHTML = _t('log');
+    document.getElementById("restart").innerHTML = _t('restart');
+    
+    document.getElementById("system_log").innerHTML = _t('system_log');
+    
     var table = document.getElementById("syslog");
     try
     {
