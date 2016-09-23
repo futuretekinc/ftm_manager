@@ -2,17 +2,11 @@
  * Created by kindmong on 2015-11-05.
  */
 $(document).ready(function(){
+    menu();
     init();
 });
 
 function init() {
-    $.li18n.currentLocale = 'kr';
-    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
-    document.getElementById("menu_sensors").innerHTML = _t('sensors');
-    document.getElementById("menu_clouds").innerHTML = _t('clouds');
-    document.getElementById("menu_network").innerHTML = _t('network');
-    document.getElementById("menu_system").innerHTML = _t('system');
-
     document.getElementById("h_dhcp_info").innerHTML = _t('dhcp_info');
  
     $.ajax({

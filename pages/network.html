@@ -35,6 +35,7 @@
                 <li><a href="clouds.html" id="menu_clouds"></a></li>
                 <li class="active"><a href="network.html" id="menu_network"></a></li>
                 <li><a href="system.html" id="menu_system"></a></li>
+                <li><a href="#" id="menu_logout" onclick="logout();"></a></li>
             </ul>
 
             <!-- 왼쪽 사이드바 -->
@@ -95,27 +96,27 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="container col-xs-offset-0" style="width: 400px;">
-                    <h3 class="page-header">기본 외부망</h3>
+                    <h3 class="page-header" id="text_active_wan"></h3>
                     <div class="form-group form-inline">
-                        <label for="interface">인터페이스 :</label>
+                        <label for="interface" id="text_active_interface"></label>
                         <select class="form-control pull-right" id="interface">
                             
                         </select>
                     </div>
                     <div class="form-group form-inline">
-                        <label for="dhcp">자동으로 주소 받기 :</label>
+                        <label for="dhcp" id="text_active_dhcp"></label>
                         <input class="form-control pull-right" type="checkbox" id="dhcp" style="width:18px;height:18px;">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="ip">IP 주소 :</label>
+                        <label for="ip" id="text_active_ip"></label>
                         <input class="form-control pull-right" type="text" id="ip">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="subnet">서브넷 마스크 :</label>
+                        <label for="subnet" id="text_active_subnet"></label>
                         <input class="form-control pull-right" type="text" id="subnet">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="gateway">기본 게이트웨이 :</label>
+                        <label for="gateway" id="text_active_gateway"></label>
                         <input class="form-control pull-right" type="text" id="gateway">
                     </div>
                 </div>
@@ -127,29 +128,29 @@
                 <div class="container col-xs-offset-0" style="width: 400px;">
                     <div class="form-group form-inline">
                         <input class="form-control pull-left" type="checkbox" id="sub_wan_cb" style="width:18px;height:18px;">
-                        <h3 class="page-header">&nbsp;보조 외부망</h3>
+                        <h3 class="page-header" id="text_standby_wan"></h3>
                     </div>
                     <div id="sub_container">
                         <div class="form-group form-inline">
-                            <label for="interface_sub">인터페이스 :</label>
+                            <label for="interface_sub" id="text_standby_interface"></label>
                             <select class="form-control pull-right" id="interface_sub">
                                 
                             </select>
                         </div>
                         <div class="form-group form-inline">
-                            <label for="dhcp_sub">자동으로 주소 받기 :</label>
+                            <label for="dhcp_sub" id="text_standby_dhcp"></label>
                             <input class="form-control pull-right" type="checkbox" id="dhcp_sub" style="width:18px;height:18px;">
                         </div>
                         <div class="form-group form-inline">
-                            <label for="ip_sub">IP 주소 :</label>
+                            <label for="ip_sub" id="text_standby_ip"></label>
                             <input class="form-control pull-right" type="text" id="ip_sub">
                         </div>
                         <div class="form-group form-inline">
-                            <label for="subnet_sub">서브넷 마스크 :</label>
+                            <label for="subnet_sub" id="text_standby_subnet"></label>
                             <input class="form-control pull-right" type="text" id="subnet_sub">
                         </div>
                         <div class="form-group form-inline">
-                            <label for="gateway_sub">기본 게이트웨이 :</label>
+                            <label for="gateway_sub" id="text_standby_gateway"></label>
                             <input class="form-control pull-right" type="text" id="gateway_sub">
                         </div>
                     </div>
@@ -160,13 +161,13 @@
 
              <div class="row">
                 <div class="container col-xs-offset-0" style="width: 400px;">
-                    <h3 class="page-header">내부망</h3>
+                    <h3 class="page-header" id="text_lan"></h3>
                     <div class="form-group form-inline">
-                        <label for="ip_lan">IP 주소 :</label>
+                        <label for="ip_lan" id="text_lan_ip"></label>
                         <input class="form-control pull-right" type="text" id="ip_lan">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="subnet_lan">서브넷 마스크 :</label>
+                        <label for="subnet_lan" id="text_lan_subnet"></label>
                         <input class="form-control pull-right" type="text" id="subnet_lan">
                     </div>
                 </div>
@@ -178,7 +179,7 @@
                 <div class="container col-xs-offset-0" style="width: 400px;">
                     <div class="form-group">
                         <div>
-                            <button type="button" class="btn btn-default pull-right" onclick="onApply();">수정</button>
+                            <button type="button" class="btn btn-default pull-right" onclick="onApply();" id="modify_btn"></button>
                         </div>
                     </div>
                 </div>
@@ -199,5 +200,6 @@
     <script src="../js/pages/network.js"></script>
     <script src="../jquery.li18n.min.js"></script>
     <script src="../lang.js"></script>
+    <script src="../js/util.js"></script>
 </body>
 </html>

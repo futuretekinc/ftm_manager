@@ -42,6 +42,7 @@
                 <li><a href="../clouds.html" id="menu_clouds"></a></li>
                 <li><a href="../network.html" id="menu_network"></a></li>
                 <li class="active"><a href="system_restart.html" id="menu_system"></a></li>
+                <li><a href="#" id="menu_logout" onclick="logout();"></a></li>
             </ul>
 
             <!-- 왼쪽 사이드바 -->
@@ -75,7 +76,7 @@
                         <label for="restart" id="reboot_message">Please click the button below For a system restart.</label>
                         <br>
                         <br>
-                        <button type="button" class="btn btn-default" id="restart" onclick="onSystemRestart();">재시작</button>
+                        <button type="button" class="btn btn-default" id="restart_btn" onclick="onSystemRestart();"></button>
                     </div>
                 </div>
                 <!-- /.col-lg-12 -->
@@ -95,5 +96,6 @@
 	<script src="../../scripts/system_reboot.js"></script>
     <script src="../../jquery.li18n.min.js"></script>
     <script src="../../lang.js"></script>
+    <script src="../../js/util.js"></script>
 </body>
 </html>

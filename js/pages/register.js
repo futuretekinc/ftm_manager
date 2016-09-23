@@ -7,18 +7,13 @@ var interval;
 var intervalCount = 0;
 
 function init() {
-    $.li18n.currentLocale = 'kr';
+    
     document.getElementById("menu_register").innerHTML = _t('register');
     document.getElementById("menu_list").innerHTML = _t("list");
     //document.getElementById("search_label").innerHTML = _t("mac") + " :";
     document.getElementById("btn_search").innerHTML = _t("search");
-    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
-    document.getElementById("menu_sensors").innerHTML = _t('sensors');
-    document.getElementById("menu_clouds").innerHTML = _t('clouds');
-    document.getElementById("menu_network").innerHTML = _t('network');
-    document.getElementById("menu_system").innerHTML = _t('system');
     document.getElementById("btn_register").innerHTML = _t('register');
-
+    document.getElementById("text_register_info").innerHTML = _t('text_register_info');
 //     var mac_search = document.getElementById("mac_search");
 //     mac_search.addEventListener("click", function(){
 //         document.getElementById("mac_tab").setAttribute("class", "active");
@@ -34,6 +29,7 @@ function init() {
 }
 
 $(document).ready(function(){
+    menu();
     init();
 
     // 검색 버튼

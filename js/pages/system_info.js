@@ -2,16 +2,11 @@
  * Created by kindmong on 2015-11-05.
  */
 $(document).ready(function(){
+    menu();
     init();
 });
 
 function init() {
-    $.li18n.currentLocale = 'kr';
-    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
-    document.getElementById("menu_sensors").innerHTML = _t('sensors');
-    document.getElementById("menu_clouds").innerHTML = _t('clouds');
-    document.getElementById("menu_network").innerHTML = _t('network');
-    document.getElementById("menu_system").innerHTML = _t('system');
     
     document.getElementById("info").innerHTML = _t('information');
     document.getElementById("log").innerHTML = _t('log');
@@ -23,9 +18,16 @@ function init() {
     document.getElementById("modem_label").innerHTML = _t('modem_ver');
     document.getElementById("information").innerHTML = _t('device_info');
 
-    
+    document.getElementById("change_pw").innerHTML = _t('change_pw');
+    document.getElementById("current_pw").innerHTML = _t('current_pw');
+    document.getElementById("new_pw").innerHTML = _t('new_pw');
+    document.getElementById("confirm_new_pw").innerHTML = _t('confirm_new_pw');
+    document.getElementById("modify_btn").innerHTML = _t('modify');
 
+    
     return;
+
+
     $.ajax({
         type:"get",
         url:"/cgi-bin/system?cmd=profile",

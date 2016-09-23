@@ -43,6 +43,7 @@
                 <li><a href="clouds.html" id="menu_clouds"></a></li>
                 <li><a href="network.html" id="menu_network"></a></li>
                 <li><a href="system.html" id="menu_system"></a></li>
+                <li><a href="#" id="menu_logout" onclick="logout();"></a></li>
             </ul>
 
             <!-- 왼쪽 사이드바 -->
@@ -69,7 +70,7 @@
             <br>
             <div class="alert alert-info alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                ※ MAC 주소 혹은 아이피를 입력해 주세요.
+                <h id="text_register_info">※ MAC 주소 혹은 아이피를 입력해 주세요.</h>
             </div>
             <!-- <ul class="nav nav-tabs">
                 <li role="presentation" class="active" id="mac_tab"><a id="mac_search" href="#">맥으로 검색</a></li>
@@ -104,5 +105,6 @@
     <script src="../js/pages/register.js"></script>
     <script src="../jquery.li18n.min.js"></script>
     <script src="../lang.js"></script>
+    <script src="../js/util.js"></script>
 </body>
 </html>

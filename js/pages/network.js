@@ -2,17 +2,31 @@
  * Created by kindmong on 2015-11-05.
  */
 function init() {
-    $.li18n.currentLocale = 'kr';
-    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
-    document.getElementById("menu_sensors").innerHTML = _t('sensors');
-    document.getElementById("menu_clouds").innerHTML = _t('clouds');
-    document.getElementById("menu_network").innerHTML = _t('network');
-    document.getElementById("menu_system").innerHTML = _t('system');
-
     document.getElementById("sub_wan_cb").addEventListener("change", subWanCBClicked);
+
+    document.getElementById("text_active_wan").innerHTML = _t('text_active_wan');
+    document.getElementById("text_active_interface").innerHTML = _t('text_active_interface');
+    document.getElementById("text_active_dhcp").innerHTML = _t('text_active_dhcp');
+    document.getElementById("text_active_ip").innerHTML = _t('text_active_ip');
+    document.getElementById("text_active_subnet").innerHTML = _t('text_active_subnet');
+    document.getElementById("text_active_gateway").innerHTML = _t('text_active_gateway');
+
+    document.getElementById("text_standby_wan").innerHTML = "&nbsp;" + _t('text_standby_wan');
+    document.getElementById("text_standby_interface").innerHTML = _t('text_active_interface');
+    document.getElementById("text_standby_dhcp").innerHTML = _t('text_active_dhcp');
+    document.getElementById("text_standby_ip").innerHTML = _t('text_active_ip');
+    document.getElementById("text_standby_subnet").innerHTML = _t('text_active_subnet');
+    document.getElementById("text_standby_gateway").innerHTML = _t('text_active_gateway');
+
+    document.getElementById("text_lan").innerHTML = _t('text_lan');
+    document.getElementById("text_lan_ip").innerHTML = _t('text_active_ip');
+    document.getElementById("text_lan_subnet").innerHTML = _t('text_active_subnet');
+
+    document.getElementById("modify_btn").innerHTML = _t('modify');
 }
 
 $(document).ready(function(){
+    menu();
     init();
     loadNetworkData();
 });

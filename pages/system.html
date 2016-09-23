@@ -43,6 +43,7 @@
                 <li><a href="clouds.html" id="menu_clouds"></a></li>
                 <li><a href="network.html" id="menu_network"></a></li>
                 <li class="active"><a href="system.html" id="menu_system"></a></li>
+                <li><a href="#" id="menu_logout" onclick="logout();"></a></li>
             </ul>
 
             <!-- 왼쪽 사이드바 -->
@@ -50,16 +51,16 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
                         <li>
-                            <a href="system.html" id="info">Information</a>
+                            <a href="system.html" id="info"></a>
                         </li>
                         <li>
-                            <a href="system/system_log.html" id="log">Log</a>
+                            <a href="system/system_log.html" id="log"></a>
                         </li>
                         <!-- <li>
                             <a href="system/system_backup.html" id="backup">Backup</a>
                         </li> -->
                         <li>
-                            <a href="system/system_restart.html" id="restart">Restart</a>
+                            <a href="system/system_restart.html" id="restart"></a>
                         </li>
                     </ul>
                 </div>
@@ -71,23 +72,23 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="container col-xs-offset-0" style="width: 350px;">
-                    <h3 class="page-header" id="information">Device Information</h3>
+                    <h3 class="page-header" id="information"></h3>
                     <table class="table table-bordered">
                         <tbody>
                         <tr>
-                            <th id="model_label">MODEL</th>
+                            <th id="model_label"></th>
                             <td id="model"></td>
                         </tr>
                         <tr>
-                            <th id="sn_label">S/N</th>
+                            <th id="sn_label"></th>
                             <td id="sn"></td>
                         </tr>
                         <tr>
-                            <th id="hw_label">HW Version</th>
+                            <th id="hw_label"></th>
                             <td id="hw_version"></td>
                         </tr>
                         <tr>
-                            <th id="modem_label">Modem Version</th>
+                            <th id="modem_label"></th>
                             <td id="modem_version"></td>
                         </tr>
                         </tbody>
@@ -97,23 +98,23 @@
             </div>
             <div class="row">
                 <div class="container col-xs-offset-0" style="width: 350px;">
-                    <h3 class="page-header">비밀번호 변경</h3>
+                    <h3 class="page-header" id="change_pw"></h3>
                     <div class="form-group form-inline">
-                        <label for="passwd">기존 비밀번호 :</label>
+                        <label for="passwd" id="current_pw"></label>
                         <input class="form-control pull-right" type="password" id="passwd" maxlength="32">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="new_passwd">새 비밀번호 :</label>
+                        <label for="new_passwd" id="new_pw"></label>
                         <input class="form-control pull-right" type="password" id="new_passwd" maxlength="32">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="confirm_passwd">새 비밀번호 확인 :</label>
+                        <label for="confirm_passwd" id="confirm_new_pw"></label>
                         <input class="form-control pull-right" type="password" id="confirm_passwd" maxlength="32">
                     </div>
                     <br>
                     <div class="form-group">
                         <di v>
-                            <button type="button" class="btn btn-default pull-right" onclick="onApplyChangePasswd();">Modify</button>
+                            <button type="button" class="btn btn-default pull-right" onclick="onApplyChangePasswd();" id="modify_btn"></button>
                         </div>
                     </div>
                 </div>
@@ -136,5 +137,6 @@
     <script src="../js/pages/system_info.js"></script>
     <script src="../jquery.li18n.min.js"></script>
     <script src="../lang.js"></script>
+    <script src="../js/util.js"></script>
 </body>
 </html>

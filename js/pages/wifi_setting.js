@@ -2,6 +2,7 @@
  * Created by kindmong on 2015-11-05.
  */
 $(document).ready(function(){
+	menu();
     init();
 });
 

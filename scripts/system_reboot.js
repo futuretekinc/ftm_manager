@@ -4,19 +4,15 @@ var msgResetaring = 1;
 var msgRestartFailed=2;
 
 $(document).ready(function(){
-    $.li18n.currentLocale = 'kr';
-    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
-    document.getElementById("menu_sensors").innerHTML = _t('sensors');
-    document.getElementById("menu_clouds").innerHTML = _t('clouds');
-    document.getElementById("menu_network").innerHTML = _t('network');
-    document.getElementById("menu_system").innerHTML = _t('system');
+    menu();
     
     document.getElementById("info").innerHTML = _t('information');
     document.getElementById("log").innerHTML = _t('log');
-    document.getElementById("restart").innerHTML = _t('restart');
-
+    
     document.getElementById("system_reboot").innerHTML = _t('system_reboot');
     document.getElementById("reboot_message").innerHTML = _t('reboot_message');
+
+    document.getElementById("restart_btn").innerHTML = _t('reboot_btn');
 });
 
 function onInit()
@@ -28,7 +24,7 @@ function onInit()
 	document.getElementById('page_title').innerHTML = '시스템 관리';
 	document.getElementById('section1_title').innerHTML='시스템 재시작';
 	document.getElementById('restart_info').innerHTML='시스템 재시작을 원하시면, 아래의 버튼을 누르시기 바랍니다.';
-	document.getElementById('btn_restart').value = '재시작';
+	//document.getElementById('btn_restart').value = '재시작';
 	
 		
 	document.getElementById('body').hidden = false;
