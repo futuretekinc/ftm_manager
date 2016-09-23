@@ -24,10 +24,6 @@ function init() {
     document.getElementById("confirm_new_pw").innerHTML = _t('confirm_new_pw');
     document.getElementById("modify_btn").innerHTML = _t('modify');
 
-    
-    return;
-
-
     $.ajax({
         type:"get",
         url:"/cgi-bin/system?cmd=profile",
