@@ -10,7 +10,7 @@ function init() {
     
     document.getElementById("info").innerHTML = _t('information');
     document.getElementById("log").innerHTML = _t('log');
-    document.getElementById("restart").innerHTML = _t('restart');
+    document.getElementById("restart").innerHTML = _t('system_reboot');
 
     document.getElementById("model_label").innerHTML = _t('model');
     document.getElementById("sn_label").innerHTML = _t('sn');
@@ -24,6 +24,9 @@ function init() {
     document.getElementById("confirm_new_pw").innerHTML = _t('confirm_new_pw');
     document.getElementById("modify_btn").innerHTML = _t('modify');
 
+
+
+    return;
     $.ajax({
         type:"get",
         url:"/cgi-bin/system?cmd=profile",

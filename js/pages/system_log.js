@@ -15,9 +15,13 @@ function init() {
     
     document.getElementById("info").innerHTML = _t('information');
     document.getElementById("log").innerHTML = _t('log');
-    document.getElementById("restart").innerHTML = _t('restart');
+    document.getElementById("restart").innerHTML = _t('system_reboot');
     
     document.getElementById("system_log").innerHTML = _t('system_log');
+    document.getElementById("th_number").innerHTML = _t('number');
+    document.getElementById("th_time").innerHTML = _t('time');
+    document.getElementById("th_process").innerHTML = _t('process');
+    document.getElementById("th_log").innerHTML = _t('log');
     
     var table = document.getElementById("syslog");
     try

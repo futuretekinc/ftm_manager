@@ -103,49 +103,43 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="container col-xs-offset-0" style="width: 350px;">
-                    <h3 class="page-header" id="h_dhcp_info">DHCP Server Information</h3>
+                    <h3 class="page-header" id="h_dhcp_info"></h3>
                     <table class="table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>Key</th>
-                            <th>Value</th>
-                        </tr>
-                        </thead>
                         <tbody>
                         <tr>
-                            <th>Status</th>
+                            <th id="th_status"></th>
                             <td id="status"></td>
                         </tr>
                         <tr>
-                            <th>Interface</th>
+                            <th id="th_interface"></th>
                             <td id="interface"></td>
                         </tr>
                         <tr>
-                            <th>할당 시작 주소</th>
+                            <th id="th_ip_start"></th>
                             <td id="start"></td>
                         </tr>
                         <tr>
-                            <th>할당 끝 주소</th>
+                            <th id="th_ip_end"></th>
                             <td id="end"></td>
                         </tr>
                         <tr>
-                            <th>라우터</th>
+                            <th id="th_gateway"></th>
                             <td id="router"></td>
                         </tr>
                         <tr>
-                            <th>할당시간</th>
+                            <th id="th_leases_time"></th>
                             <td id="time"></td>
                         </tr>
                         <tr>
-                            <th>고정 IP</th>
+                            <th id="th_static_ip"></th>
                             <td id="static"></td>
                         </tr>
                         <tr>
-                            <th>DNS 1</th>
+                            <th id="th_dns1"></th>
                             <td id="dns1"></td>
                         </tr>
                         <tr>
-                            <th>DNS 2</th>
+                            <th id="th_dns2"></th>
                             <td id="dns2"></td>
                         </tr>
                         </tbody>
@@ -157,15 +151,15 @@
 
             <div class="row">
                 <div class="container col-xs-offset-0" style="width: 600px;">
-                    <h3 class="page-header">DHCP IP 할당 정보</h3>
+                    <h3 class="page-header" id="h_dhcp_ip_info"></h3>
                     <table class="table table-bordered">
                         <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Mac Address</th>
-                            <th>IP Address</th>
-                            <th>Name</th>
-                            <th>Time remain</th>
+                            <th id="th_number">No</th>
+                            <th id="th_mac">Mac Address</th>
+                            <th id="th_ip">IP Address</th>
+                            <th id="th_name">Name</th>
+                            <th id="th_time_remain">Time remain</th>
                         </tr>
                         </thead>
                         <tbody id="dhcp_active_leases">

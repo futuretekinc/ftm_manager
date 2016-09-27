@@ -8,6 +8,7 @@ $(document).ready(function(){
     
     document.getElementById("info").innerHTML = _t('information');
     document.getElementById("log").innerHTML = _t('log');
+    document.getElementById("restart").innerHTML = _t('system_reboot');
     
     document.getElementById("system_reboot").innerHTML = _t('system_reboot');
     document.getElementById("reboot_message").innerHTML = _t('reboot_message');

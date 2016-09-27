@@ -8,7 +8,24 @@ $(document).ready(function(){
 
 function init() {
     document.getElementById("h_dhcp_info").innerHTML = _t('dhcp_info');
- 
+    document.getElementById("h_dhcp_ip_info").innerHTML = _t('dhcp_ip_info');
+
+    document.getElementById("th_status").innerHTML = _t('state');
+    document.getElementById("th_interface").innerHTML = _t('text_active_interface');
+    document.getElementById("th_ip_start").innerHTML = _t('ip_start');
+    document.getElementById("th_ip_end").innerHTML = _t('ip_end');
+    document.getElementById("th_gateway").innerHTML = _t('text_active_gateway');
+    document.getElementById("th_leases_time").innerHTML = _t('leases_time');
+    document.getElementById("th_static_ip").innerHTML = _t('static_ip');
+    document.getElementById("th_dns1").innerHTML = _t('dns') + " 1";
+    document.getElementById("th_dns2").innerHTML = _t('dns') + " 2";
+
+    document.getElementById("th_number").innerHTML = _t('number');
+    document.getElementById("th_mac").innerHTML = _t('mac');
+    document.getElementById("th_ip").innerHTML = _t('ip');
+    document.getElementById("th_name").innerHTML = _t('name');
+    document.getElementById("th_time_remain").innerHTML = _t('time_remain');
+
     $.ajax({
         type:"get",
         url:"/cgi-bin/dhcp?cmd=status",

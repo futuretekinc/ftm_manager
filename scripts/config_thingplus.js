@@ -5,6 +5,14 @@ var	msg;
 
 var spinner;
 
+function init() {
+    document.getElementById("h_apikey_setting").innerHTML = _t('apikey_setting');
+    document.getElementById("btn_register").innerHTML = _t('btn_register');
+    document.getElementById("h_cloud_status").innerHTML = _t('cloud_status');
+    document.getElementById("btn_stop").innerHTML = _t('stop');
+    document.getElementById("btn_start").innerHTML = _t('start');
+}
+
 function onInit()
 {
 	msg = new Array();
@@ -17,7 +25,6 @@ function onInit()
 	document.getElementById('section1_title').innerHTML='API KEY 설정';
 	document.getElementById('apply').value='적용';
 	document.getElementById('body').hidden = false;
-	
 }
 
 function onLoad()
@@ -29,6 +36,7 @@ function onLoad()
 
 $(document).ready(function(){
 	menu();
+	init();
 	spinner = new Spinner();
     loadApiKey();
 });

@@ -66,13 +66,13 @@
         <div id="page-wrapper">
             <div class="row">
                 <div class="col-lg-8">
-                    <h3 class="page-header">API-Key Setting</h3>
+                    <h3 class="page-header" id="h_apikey_setting">API-Key Setting</h3>
                     <form class="form-inline">
                         <div class="form-group">
                             <label>API-KEY :</label>
                             <input type="text" class="form-control" id="apikey" style="width: 350px;">
                         </div>
-                        <button type="button" class="btn btn-default" onclick="setApiKey();">Register</button>
+                        <button type="button" class="btn btn-default" onclick="setApiKey();" id="btn_register">Register</button>
                     </form>
                 </div>
                 <!-- /.col-lg-12 -->
@@ -83,7 +83,7 @@
             <br>
             <div class="row">
                 <div class="col-lg-8">
-                    <h3 class="page-header">Cloud Synchronization Status</h3>
+                    <h3 class="page-header" id="h_cloud_status">Cloud Synchronization Status</h3>
                     <form class="form">
                         <div class="form-group">
                             <div class="alert alert-success" style="width: 200px" id="cloud_status">
@@ -94,8 +94,8 @@
                             <!--</div>-->
                         </div>
                         <br>
-                        <button type="button" class="btn btn-default" onclick="cloudStop();">Stop</button>
-                        <button type="button" class="btn btn-default" onclick="cloudStart();">Start</button>
+                        <button type="button" class="btn btn-default" onclick="cloudStop();" id="btn_stop">Stop</button>
+                        <button type="button" class="btn btn-default" onclick="cloudStart();" id="btn_start">Start</button>
                     </form>
                 </div>
                 <!-- /.col-lg-12 -->

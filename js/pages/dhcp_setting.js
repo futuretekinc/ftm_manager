@@ -10,7 +10,25 @@ function init() {
     document.getElementById("h_dhcp_setting").innerHTML = _t('dhcp_setting');       
     document.getElementById("modify_btn").innerHTML = _t('modify');     
     document.getElementById("btn_add").innerHTML = _t('add');
+    document.getElementById("label_enable").innerHTML = _t('enabled');
+    document.getElementById("label_static_enabled").innerHTML = _t('enabled');
+    document.getElementById("h_static_setting").innerHTML = _t('static_ip_address');
+
     
+    document.getElementById("label_interface").innerHTML = _t('text_active_interface');
+    document.getElementById("label_ip_start").innerHTML = _t('ip_start');
+    document.getElementById("label_ip_end").innerHTML = _t('ip_end');
+    document.getElementById("label_gateway").innerHTML = _t('text_active_gateway');
+    document.getElementById("label_dns1").innerHTML = _t('dns') + " 1";
+    document.getElementById("label_dns2").innerHTML = _t('dns') + " 2";
+    document.getElementById("label_leases").innerHTML = _t('leases_time');
+
+    document.getElementById("th_number").innerHTML = _t('number');
+    document.getElementById("th_mac").innerHTML = _t('mac');
+    document.getElementById("th_ip").innerHTML = _t('ip');
+    document.getElementById("th_add").innerHTML = _t('add');
+    
+
     $.ajax({
         type:"get",
         url:"/cgi-bin/dhcp?cmd=status",

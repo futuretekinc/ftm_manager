@@ -106,36 +106,35 @@
                     <h3 class="page-header" id="h_dhcp_setting">DHCP Server Setting</h3>
 
                     <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="enable"> Enabled
-                        </label>
+                        <input type="checkbox" id="enable">
+                        <label id="label_enable"></label>
                     </div>
                     <div class="form-group form-inline">
-                        <label for="eth_if">Interface :</label>
+                        <label for="eth_if" id="label_interface"></label>
                         <input class="form-control pull-right" type="text" id="eth_if">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="start">할당 시작 주소 :</label>
+                        <label for="start" id="label_ip_start"></label>
                         <input class="form-control pull-right" type="text" id="start">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="end">할당 끝 주소 :</label>
+                        <label for="end" id="label_ip_end"></label>
                         <input class="form-control pull-right" type="text" id="end">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="router">라우터 :</label>
+                        <label for="router" id="label_gateway"></label>
                         <input class="form-control pull-right" type="text" id="router">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="dns1">DNS 1 :</label>
+                        <label for="dns1" id="label_dns1"></label>
                         <input class="form-control pull-right" type="text" id="dns1">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="dns2">DNS 2 :</label>
+                        <label for="dns2" id="label_dns2"></label>
                         <input class="form-control pull-right" type="text" id="dns2">
                     </div>
                     <div class="form-group form-inline">
-                        <label for="time">Leases Time :</label>
+                        <label for="time" id="label_leases"></label>
                         <input class="form-control pull-right" type="text" id="time">
                     </div>
                     <!-- <br>
@@ -153,19 +152,18 @@
 
             <div class="row">
                 <div class="container col-xs-offset-0" style="width: 600px;">
-                    <h3 class="page-header">Static IP Address</h3>
+                    <h3 class="page-header" id="h_static_setting">Static IP Address</h3>
                     <div class="form-group">
-                        <label>
-                            <input type="checkbox" id="static_leases_cb"> Enabled
-                        </label>
+                        <input type="checkbox" id="static_leases_cb">
+                        <label id="label_static_enabled"></label>
                     </div>
                     <table class="table table-bordered" id="static_lease">
                         <thead>
                         <tr>
-                            <th>No</th>
-                            <th>Mac Address</th>
-                            <th>IP Address</th>
-                            <th>추가 / 삭제</th>
+                            <th id="th_number"></th>
+                            <th id="th_mac"></th>
+                            <th id="th_ip"></th>
+                            <th id="th_add"></th>
                         </tr>
                         </thead>
                         <tbody>
