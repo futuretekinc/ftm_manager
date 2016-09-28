@@ -23,6 +23,12 @@ function init() {
     document.getElementById("text_lan_subnet").innerHTML = _t('text_active_subnet');
 
     document.getElementById("modify_btn").innerHTML = _t('modify');
+
+    document.getElementById("a_default_info").innerHTML = _t('network');
+    document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_apn_setting").innerHTML = _t('apn_setting');
+    document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
 }
 
 $(document).ready(function(){

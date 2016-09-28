@@ -103,6 +103,7 @@ $.li18n.translations = {
         "start" : "시작",
         "time" : "시간",
         "process" : "프로세스",
+        "status_info" : "상태 정보",
     },
     "en": {
         "information" : "Information",
@@ -207,5 +208,6 @@ $.li18n.translations = {
         "start" : "Start",
         "time" : "Time",
         "process" : "Process",
+        "status_info" : "Status",
     },
 };

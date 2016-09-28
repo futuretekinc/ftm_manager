@@ -1,24 +1,13 @@
 /**
  * Created by kindmong on 2015-11-05.
  */
-function init() {
-    $.li18n.currentLocale = 'kr';
-    document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
-    document.getElementById("menu_sensors").innerHTML = _t('sensors');
-    document.getElementById("menu_clouds").innerHTML = _t('clouds');
-    document.getElementById("menu_network").innerHTML = _t('network');
-    document.getElementById("menu_system").innerHTML = _t('system');
-
-	document.getElementById("label_name").innerHTML = _t('port');
-    document.getElementById("label_ip").innerHTML = _t('ip');
-    document.getElementById("label_subnet").innerHTML = _t('subnet');
-    document.getElementById("label_mac").innerHTML = _t('mac');
-	document.getElementById("modify_btn").innerHTML = _t('modify');
-}
-
 $(document).ready(function(){
-    init();
-
+	document.getElementById("a_default_info").innerHTML = _t('network');
+	document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_apn_setting").innerHTML = _t('apn_setting');
+    document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
+    
     $('input:radio[name="inlineRadioOptions"]').change(function() {
         console.log("Ataeta");
     });

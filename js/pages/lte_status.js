@@ -7,6 +7,12 @@ function init() {
     document.getElementById("th_ip").innerHTML = _t('ip');
     document.getElementById("th_subnet").innerHTML = _t('subnet');
     document.getElementById("th_mac").innerHTML = _t('mac');
+
+    document.getElementById("a_default_info").innerHTML = _t('network');
+    document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_apn_setting").innerHTML = _t('apn_setting');
+    document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
 }
 
 $(document).ready(function(){

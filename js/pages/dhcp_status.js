@@ -26,6 +26,12 @@ function init() {
     document.getElementById("th_name").innerHTML = _t('name');
     document.getElementById("th_time_remain").innerHTML = _t('time_remain');
 
+    document.getElementById("a_default_info").innerHTML = _t('network');
+    document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_apn_setting").innerHTML = _t('apn_setting');
+    document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
+
     $.ajax({
         type:"get",
         url:"/cgi-bin/dhcp?cmd=status",

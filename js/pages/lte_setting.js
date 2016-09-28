@@ -11,6 +11,12 @@ function init() {
 	document.getElementById("h_apn").innerHTML = _t('apn_setting');
 	document.getElementById("modify_btn").innerHTML = _t('modify');
 
+	document.getElementById("a_default_info").innerHTML = _t('network');
+	document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_apn_setting").innerHTML = _t('apn_setting');
+    document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
+    document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
+	
     $.ajax({
         type:"get",
         url:"/cgi-bin/apn?cmd=state",
