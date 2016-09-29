@@ -20,6 +20,14 @@ function testInit() {
     document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
     document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
 
+    document.getElementById("label_enable").innerHTML = _t('enabled');
+    document.getElementById("th_number").innerHTML = _t('number');
+    document.getElementById("th_sort").innerHTML = _t('sort');
+    document.getElementById("th_ip").innerHTML = _t('ip');
+    document.getElementById("th_protocol").innerHTML = _t('protocol');
+    document.getElementById("th_port").innerHTML = _t('port');
+    document.getElementById("th_add").innerHTML = _t('add');
+
     $.ajax({
         type:"get",
         url:"/test_netfilter.json",
@@ -53,6 +61,14 @@ function init() {
     document.getElementById("a_apn_setting").innerHTML = _t('apn_setting');
     document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
     document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
+
+    document.getElementById("label_enable").innerHTML = _t('enabled');
+    document.getElementById("th_number").innerHTML = _t('number');
+    document.getElementById("th_sort").innerHTML = _t('sort');
+    document.getElementById("th_ip").innerHTML = _t('ip');
+    document.getElementById("th_protocol").innerHTML = _t('protocol');
+    document.getElementById("th_port").innerHTML = _t('port');
+    document.getElementById("th_add").innerHTML = _t('add');
 
     $.ajax({
         type:"get",

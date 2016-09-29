@@ -49,7 +49,7 @@ $.li18n.translations = {
         "push" : "Push 메시지 발송",
         "mail" : "이메일 발송",
         "information" : "정보",
-        "port" : "포트 이름",
+        "port" : "포트",
         "ip" : "아이피 주소",
         "subnet" : "서브넷 마스크",
         "apn_setting" : "APN 설정",
@@ -104,6 +104,8 @@ $.li18n.translations = {
         "time" : "시간",
         "process" : "프로세스",
         "status_info" : "상태 정보",
+        "protocol" : "프로토콜",
+        "sort" : "구분",
     },
     "en": {
         "information" : "Information",
@@ -209,5 +211,7 @@ $.li18n.translations = {
         "time" : "Time",
         "process" : "Process",
         "status_info" : "Status",
+        "protocol" : "Protocol",
+        "sort" : "Sort",
     },
 };
