@@ -106,6 +106,7 @@ $.li18n.translations = {
         "status_info" : "상태 정보",
         "protocol" : "프로토콜",
         "sort" : "구분",
+        "key" : "종류",
     },
     "en": {
         "information" : "Information",
@@ -213,5 +214,6 @@ $.li18n.translations = {
         "status_info" : "Status",
         "protocol" : "Protocol",
         "sort" : "Sort",
+        "key" : "Key",
     },
 };

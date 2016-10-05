@@ -1,5 +1,5 @@
 function menu() {
-	$.li18n.currentLocale = 'en';
+	$.li18n.currentLocale = 'kr';
     document.getElementById("menu_dashboard").innerHTML = _t('dashboard');
     document.getElementById("menu_sensors").innerHTML = _t('sensors');
     document.getElementById("menu_clouds").innerHTML = _t('clouds');
