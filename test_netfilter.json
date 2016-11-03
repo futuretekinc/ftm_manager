@@ -1,8 +1,0 @@
-{
-	"rules":[
-		{ "name" : "state" , "type" : "static" , "src" : "wan" , "match" : "state --state ESTABLISHED,RELATED" , "target" : "ACCEPT" },
-		{ "name" : "ping" , "type" : "static" , "src" : "wan" , "proto" : "icmp" , "target" : "ACCEPT" },
-		{ "name" : "dropbear" , "type" : "static" , "src" : "all" , "proto" : "tcp" , "target" : "ACCEPT" },
-		{ "name" : "lighttpd" , "type" : "static" , "src" : "wan" , "proto" : "tcp" , "target" : "ACCEPT" }
-	]
-}

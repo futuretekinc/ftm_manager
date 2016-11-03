@@ -1,3 +1,5 @@
+var isTest = true;
+
 function menu() {
 	$.li18n.currentLocale = 'kr';
     document.getElementById("menu_dashboard").innerHTML = _t('dashboard');

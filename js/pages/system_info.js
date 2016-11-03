@@ -42,7 +42,7 @@ function init() {
             });
         },
         error : function(xhr, status, error) {
-            alert("에러발생");
+            console.log("에러발생");
             //window.location.href="/";
         }
     });
@@ -103,7 +103,34 @@ function onApplyChangePasswd()
 
 function loadModemVersion()
 {
+    var url = "";
+    if (isTest) {
+        url = "/json/modem_ver.json";
+    } else {
+        url = "/cgi-bin/module?cmd=get";
+    }
+
     $.ajax({
+        type:"get",
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+
+            if (json.result == "success") {
+                document.getElementById("modem_version").innerHTML = json.modem.ver;
+            } else {
+                alert("Please Retry");
+            }
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+            // window.location.href="/";
+        }
+    });
+
+    /*$.ajax({
         type:"get",
         url:"/cgi-bin/module?cmd=state",
         dataType:"xml",
@@ -118,52 +145,8 @@ function loadModemVersion()
             //alert("에러발생");
             window.location.href="/";
         }
-    });
-    /*
-    if(typeof window.ActiveXObject != 'undefined')
-    {
-        xmlhttp = (new ActiveXObject("Microsoft.XMLHTTP"));
-    }
-    else
-    {
-        xmlhttp = (new XMLHttpRequest());
-    }
-
-    var data = "/cgi-bin/module?cmd=state";
-
-    xmlhttp.open( "POST", data, true );
-    xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=euc-kr");
-    xmlhttp.onreadystatechange = function()
-    {
-        if( (xmlhttp.readyState == 4) && (xmlhttp.status == 200) )
-        {
-            try
-            {
-                result = xmlhttp.responseXML.documentElement.getElementsByTagName("res")[0];
-                if (result.firstChild.nodeValue == 'OK') {
-                    // 파싱
-                    var result2 = xmlhttp.responseXML.documentElement.getElementsByTagName("text")[0];
-                    var ver_text = result2.firstChild.nodeValue;
-                    if (ver_text == "done" || ver_text == "URC MESSAGE")
-                    {
-                        alert("Please Refresh..");
-                        return;
-                    }
-                    document.getElementById('modem_version').innerHTML = ver_text;
-                    //loadModemHwVersion(); // LG
-                } else {
-                    // error
-                    alert(result.firstChild.nodeValue);
-                }
-            }
-            catch(e)
-            {
-
-            }
-        }
-    };
-    xmlhttp.send();
-    */
+    });*/
+    
 }
 
 function loadModemHwVersion()

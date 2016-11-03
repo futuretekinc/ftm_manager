@@ -32,7 +32,55 @@ function init() {
     document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
     document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
 
+    var url = "";
+    if (isTest) {
+        url = "/json/dhcp.json";
+    } else {
+        url = "/cgi-bin/dhcp2?cmd=get";
+    }
+
     $.ajax({
+        type:"get",
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+            var config = json.config;
+
+            if (json.result == "success") {
+                if (config.enable == true) {
+                    document.getElementById("status").innerHTML = "enable";
+                } else {
+                    document.getElementById("status").innerHTML = "disable";
+                }
+                document.getElementById("interface").innerHTML = config.interface;
+                document.getElementById("start").innerHTML = config.start;
+                document.getElementById("end").innerHTML = config.end;
+                document.getElementById("router").innerHTML = config.router;
+                document.getElementById("time").innerHTML = config.lease;
+                document.getElementById("dns1").innerHTML = config.dns[0];
+                document.getElementById("dns2").innerHTML = config.dns[1];
+                if (config.static == 1) {
+                    document.getElementById("static").innerHTML = "enable";
+                } else {
+                    document.getElementById("static").innerHTML = "disable";
+                }
+
+                var leases = config.leases;
+                active_ip(leases);
+
+            } else {
+                alert("Please Retry");
+            }
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+            //window.location.href="/";
+        }
+    });
+
+    /*$.ajax({
         type:"get",
         url:"/cgi-bin/dhcp?cmd=status",
         dataType:"xml",
@@ -64,13 +112,22 @@ function init() {
             //alert("에러발생");
             window.location.href="/";
         }
-    });
+    });*/
 }
 
 function active_ip(leases) {
+    //console.log(leases);
+
+    var url = "";
+    if (isTest) {
+        url = "/json/active_ip.xml";
+    } else {
+        url = "/cgi-bin/dhcp?cmd=status";
+    }
+
     $.ajax({
         type:"get",
-        url:"/cgi-bin/dhcp?cmd=real_status",
+        url:url,
         dataType:"xml",
         success : function(xml) {
             // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
@@ -85,6 +142,7 @@ function active_ip(leases) {
                 }
 
                 ips = arr.reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
+                ips = ["(192.168.100.20)"]; //임시
 
                 list_count=0;
                 for(j = 0 ; j < ips.length ; j++)
@@ -98,17 +156,18 @@ function active_ip(leases) {
                     {
                         for(i = 0 ; i < leases.length ; i++)
                         {
-                            macaddr = leases[i].getElementsByTagName("MAC")[0].firstChild.nodeValue;
-                            ipaddr = leases[i].getElementsByTagName("IP")[0].firstChild.nodeValue;
+                            macaddr = leases[i].mac;
 
-                            if (hostname = leases[i].getElementsByTagName("HOSTNAME")[0].firstChild == null)
+                            ipaddr = leases[i].ipaddr.replace(/\s+$/g, "");;
+
+                            if (hostname = leases[i].hostname == null)
                             {
                                 hostname = "";
-                            } else {
-                                hostname = leases[i].getElementsByTagName("HOSTNAME")[0].firstChild.nodeValue;
+                             } else {
+                                hostname = leases[i].hostname;
                             }
 
-                            expiresin = leases[i].getElementsByTagName("EXPIRESIN")[0].firstChild.nodeValue;
+                            expiresin = leases[i].expiresin;
                             //alert(i);
                             var tbody = document.getElementById('dhcp_active_leases');
                             if (ip == ipaddr)
@@ -130,8 +189,8 @@ function active_ip(leases) {
             });
         },
         error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+            console.log("에러발생");
+            // window.location.href="/";
         }
     });
 }

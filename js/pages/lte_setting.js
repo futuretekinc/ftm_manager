@@ -16,15 +16,30 @@ function init() {
     document.getElementById("a_apn_setting").innerHTML = _t('apn_setting');
     document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
     document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
+
+    var url = "";
+    if (isTest) {
+    	url = "/json/apn_info.json";
+    } else {
+    	url = "/cgi-bin/apn?cmd=get";
+    }
 	
     $.ajax({
         type:"get",
-        url:"/cgi-bin/apn?cmd=state",
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("data").each(function(){
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+        	console.log(json);
+
+        	if (json.result == "success") {
+        		var apn_tf = document.getElementById("apn");
+        		apn_tf.value = json.apn.internet;
+        	} else {
+        		alert("Please Retry");
+        	}
+
+            /*$(xml).find("data").each(function(){
                 console.log($(this).find("text").text());
                 result = $(this).find("text").text();
                 if (result == "done" || result == "URC MESSAGE") {
@@ -35,7 +50,7 @@ function init() {
                 var textArr = result.split(",");
                 var apn_tf = document.getElementById("apn");
                 apn_tf.value = textArr[1];
-            });
+            });*/
         },
         error : function(xhr, status, error) {
 			//alert("에러발생");
@@ -48,45 +63,32 @@ function setAPN()
 {
 	if (confirm("설정 후 재부팅을 시작합니다."))
 	{
-		if(typeof window.ActiveXObject != 'undefined') {
-			xmlhttp = (new ActiveXObject("Microsoft.XMLHTTP"));
-		} else {
-			xmlhttp = (new XMLHttpRequest());
-		}
-		
-		//var sms_select = document.getElementById("smsSelect");
-		var data = "/cgi-bin/apn?cmd=set"
-
-		//var cid_select = document.getElementById("cidSelect");
+		var url = "/cgi-bin/apn2?cmd=set"
 		var apn_tf = document.getElementById("apn");
 
-		data += "&cid=0"; //cid_select[cid_select.selectedIndex].value;
-		//data += "&pdp_type=IP";
-		data += "&apn=" + apn_tf.value;
+		url += "&cid=0";
+		url += "&apn=" + apn_tf.value;
 		
-		xmlhttp.open( "POST", data, true );
-		xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=euc-kr");
-		xmlhttp.onreadystatechange = function()
-		{
-			if( (xmlhttp.readyState == 4) && (xmlhttp.status == 200) )
-			{
-				try
-				{
-					result = xmlhttp.responseXML.documentElement.getElementsByTagName("res")[0];
-					if (result.firstChild.nodeValue == 'OK') {
-						alert("재부팅을 시작합니다.");
-						onSystemRestart();
-					} else {
-						alert("APN : ERROR");
-					}
-				}
-				catch(e)
-				{
+		$.ajax({
+	        type:"get",
+	        url:url,
+	        dataType:"json",
+	        success : function(json) {
+	            
+	        	console.log(json);
 
-				}
-			}
-		}
-		xmlhttp.send();
+	        	if (json.result == "success") {
+	        		alert("재부팅을 시작합니다.");
+					onSystemRestart();
+	        	} else {
+	        		alert("Please Retry");
+	        	}
+	        },
+	        error : function(xhr, status, error) {
+				alert("Error");
+				//window.location.href="/";
+	        }
+	    });
 	}
 }
 

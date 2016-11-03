@@ -9,10 +9,10 @@ $(document).ready(function(){
 function init() {
     document.getElementById("h_dhcp_setting").innerHTML = _t('dhcp_setting');       
     document.getElementById("modify_btn").innerHTML = _t('modify');     
-    document.getElementById("btn_add").innerHTML = _t('add');
+    //document.getElementById("btn_add").innerHTML = _t('add');
     document.getElementById("label_enable").innerHTML = _t('enabled');
-    document.getElementById("label_static_enabled").innerHTML = _t('enabled');
-    document.getElementById("h_static_setting").innerHTML = _t('static_ip_address');
+    //document.getElementById("label_static_enabled").innerHTML = _t('enabled');
+    //document.getElementById("h_static_setting").innerHTML = _t('static_ip_address');
 
     
     document.getElementById("label_interface").innerHTML = _t('text_active_interface');
@@ -23,10 +23,10 @@ function init() {
     document.getElementById("label_dns2").innerHTML = _t('dns') + " 2";
     document.getElementById("label_leases").innerHTML = _t('leases_time');
 
-    document.getElementById("th_number").innerHTML = _t('number');
-    document.getElementById("th_mac").innerHTML = _t('mac');
-    document.getElementById("th_ip").innerHTML = _t('ip');
-    document.getElementById("th_add").innerHTML = _t('add');
+    //document.getElementById("th_number").innerHTML = _t('number');
+    //document.getElementById("th_mac").innerHTML = _t('mac');
+    //document.getElementById("th_ip").innerHTML = _t('ip');
+    //document.getElementById("th_add").innerHTML = _t('add');
 
     document.getElementById("a_default_info").innerHTML = _t('network');
     document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
@@ -34,8 +34,50 @@ function init() {
     document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
     document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
     
+    var url = "";
+    if (isTest) {
+        url = "/json/dhcp.json";
+    } else {
+        url = "/cgi-bin/dhcp2?cmd=get";
+    }
 
     $.ajax({
+        type:"get",
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+            var config = json.config;
+
+            if (json.result == "success") {
+                // document.getElementById("status").innerHTML = config.status;
+                document.getElementById("eth_if").readOnly = true;
+                document.getElementById("eth_if").value = config.interface;
+                document.getElementById("start").value = config.start;
+                document.getElementById("end").value = config.end;
+                document.getElementById("router").value = config.router;
+                document.getElementById("time").value = config.lease;
+                document.getElementById("dns1").value = config.dns[0];
+                document.getElementById("dns2").value = config.dns[1];
+                
+                if (config.enable == true) {
+                    document.getElementById("enable").checked = true;
+                } else {
+                    document.getElementById("enable").checked = false;
+                }
+
+            } else {
+                alert("Please Retry");
+            }
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+            //window.location.href="/";
+        }
+    });
+
+    /*$.ajax({
         type:"get",
         url:"/cgi-bin/dhcp?cmd=status",
         dataType:"xml",
@@ -82,37 +124,24 @@ function init() {
             //alert("에러발생");
             window.location.href="/";
         }
-    });
+    });*/
 }
 
 function onApply()
 {
-	//if (IsValidForm() != true)
-	//{
-	//	return;
-	//}
-	
-	if(typeof window.ActiveXObject != 'undefined')
-	{
-		xmlhttp = (new ActiveXObject("Microsoft.XMLHTTP"));
-	}
-	else
-	{
-		xmlhttp = (new XMLHttpRequest());
-	}
-	
-	var data = "/cgi-bin/dhcp?cmd=set";
+	var data = "/cgi-bin/dhcp2?cmd=set";
 	data += "&enable=" + document.getElementById("enable").checked;
 	data += "&if=" + document.getElementById('eth_if').value;
 	data += "&start=" + document.getElementById("start").value;
 	data += "&end=" + document.getElementById("end").value;
 	data += "&router=" + document.getElementById("router").value;
 	data += "&time=" + document.getElementById("time").value;
-	data += "&static=" + document.getElementById("static_leases_cb").checked;
+	data += "&static=0";// + document.getElementById("static_leases_cb").checked;
 	data += "&dns1=" + document.getElementById("dns1").value;
 	data += "&dns2=" + document.getElementById("dns2").value;
-
-	if (typeof(document.getElementsByName("mac")) != 'undefined')
+    //console.log(document.getElementById("static_leases_cb").checked);
+    // 고정아이피 설정
+	/*if (typeof(document.getElementsByName("mac")) != 'undefined')
 	{
 		if (typeof(document.getElementsByName("mac").length) != 'undefined')
 		{
@@ -128,9 +157,29 @@ function onApply()
 				data += "&mac0=" + document.getElementsByName("mac").value;
 				data += "&ip0=" + document.getElementsByName("ip").value;
 		}			
-	}
+	}*/
 
-	xmlhttp.open( "POST", data, true );
+    $.ajax({
+        type:"get",
+        url:data,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+            
+            if (json.result == "success") {
+                alert("수정완료");
+            } else {
+                alert("Please Retry");
+            }
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+            //window.location.href="/";
+        }
+    });
+
+	/*xmlhttp.open( "POST", data, true );
 	xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=euc-kr");
 	xmlhttp.onreadystatechange = function()
 	{
@@ -158,7 +207,7 @@ function onApply()
 			}
 		}
 	}
-	xmlhttp.send();
+	xmlhttp.send();*/
 }
 
 function onAddStaticLease(macaddr, ipaddr)

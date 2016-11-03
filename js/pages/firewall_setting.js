@@ -1,14 +1,15 @@
 /**
  * Created by kindmong on 2015-11-05.
  */
+var ths = ["name", "target", "type", "proto", "port", "match", "policy", "delete"];
+
 $(document).ready(function(){
     menu();
     init();
-    //testInit();
 });
 
 //===========================================================================================
-function testInit() {
+function init() {
     
     document.getElementById("h_firewall").innerHTML = _t('firewall_setting');
     document.getElementById("modify_btn").innerHTML = _t('modify');
@@ -20,26 +21,70 @@ function testInit() {
     document.getElementById("a_dhcp_status_info").innerHTML = _t('status_info');
     document.getElementById("a_dhcp_setting").innerHTML = _t('btn_register');
 
-    document.getElementById("label_enable").innerHTML = _t('enabled');
-    document.getElementById("th_number").innerHTML = _t('number');
-    document.getElementById("th_sort").innerHTML = _t('sort');
-    document.getElementById("th_ip").innerHTML = _t('ip');
-    document.getElementById("th_protocol").innerHTML = _t('protocol');
-    document.getElementById("th_port").innerHTML = _t('port');
-    document.getElementById("th_add").innerHTML = _t('add');
+    // document.getElementById("label_enable").innerHTML = _t('enabled');
+    // document.getElementById("th_number").innerHTML = _t('number');
+    // document.getElementById("th_sort").innerHTML = _t('sort');
+    // document.getElementById("th_ip").innerHTML = _t('ip');
+    // document.getElementById("th_protocol").innerHTML = _t('protocol');
+    // document.getElementById("th_port").innerHTML = _t('port');
+    // document.getElementById("th_add").innerHTML = _t('add');
+
+    var url = "";
+    if (isTest) {
+        url = "/json/test_netfilter.json";
+    } else {
+        url = "/cgi-bin/netfilter?cmd=get";
+    }
 
     $.ajax({
         type:"get",
-        url:"/test_netfilter.json",
+        url:url,
         dataType:"json",
         success : function(json) {
-            for (var i in json.rules) {
-                console.log(json.rules[i]);
-                if (json.rules[i].match) {
-                    console.log(json.rules[i].name, json.rules[i].type, json.rules[i].src, json.rules[i].match, json.rules[i].target);
-                } else {
-                    console.log(json.rules[i].name, json.rules[i].type, json.rules[i].src, json.rules[i].proto, json.rules[i].target);
+            var rules = json.netfilter.rules;
+            var tbody = document.getElementById("tbody");
+            console.log(tbody);
+            for (var i in rules) {
+                // console.log(rules[i]);
+                var tbody_tr = document.createElement("tr");
+                tbody_tr.setAttribute("id", "tr_" + i);
+                tbody.appendChild(tbody_tr);
+                
+                for (var j=0; j<ths.length; j++) {
+                    var td = document.createElement("td");
+                    tbody_tr.appendChild(td);
+
+                    $.each(rules[i], function(key, value) {
+                        // console.log(key, ths[j]);
+                        if (key == ths[j]) {
+                            td.innerHTML = value;
+                        }
+                    });
+
+                    if (ths[j] == "delete") {
+                        var btn_modify = document.createElement("button");
+                        btn_modify.setAttribute("class", "btn btn-danger btn-xs");
+                        btn_modify.setAttribute("type", "button");
+                        btn_modify.setAttribute("id", "btn_" + i);
+                        btn_modify.appendChild(document.createTextNode(_t("remove")));
+                        btn_modify.addEventListener("click", function(){
+                            console.log(this.id.substr(4));
+                            // 리스트에서 삭제
+                            var tr = document.getElementById("tr_" + this.id.substr(4));
+                            console.log(tr);
+                            var tr_parent = tr.parentNode;
+                            tr_parent.removeChild(tr);
+                            tr = null;
+                        });
+                        td.appendChild(btn_modify);
+                    }
                 }
+
+                /*if (rules[i].match) {
+                    console.log(rules[i].name, rules[i].type, rules[i].src, rules[i].match, rules[i].target);
+                } else {
+                    console.log(rules[i].name, rules[i].type, rules[i].src, rules[i].proto, rules[i].target);
+                }*/
             }
             
         },
@@ -49,9 +94,58 @@ function testInit() {
     });
 }
 
+function addNetfilter() {
+    $("#modal_netfilter_add").modal();
+}
+
+$("#modal_btn_add").click(function() {
+    var name = document.getElementById("name").value;
+    var target = document.getElementById("target").value;
+    var proto = document.getElementById("proto").value;
+    // var match = document.getElementById("match").value;
+    var port = document.getElementById("port").value;
+    var policy = document.getElementById("policy").value;
+
+    //console.log(name, target, proto, port, policy);
+    var rowCount = $('#control_table tr').length;
+    // console.log(rowCount);
+
+    var tbody = document.getElementById("tbody");
+    var tbody_tr = document.createElement("tr");
+    tbody_tr.setAttribute("id", "tr_" + (rowCount - 1));
+    tbody.appendChild(tbody_tr);
+
+    for (var i=0; i<ths.length; i++) {
+        var td = document.createElement("td");
+        tbody_tr.appendChild(td);
+
+        if (document.getElementById(ths[i]) != null) {
+            td.innerHTML = document.getElementById(ths[i]).value;
+        } else {
+            if (ths[i] == "delete") {
+                var btn_modify = document.createElement("button");
+                btn_modify.setAttribute("class", "btn btn-danger btn-xs");
+                btn_modify.setAttribute("type", "button");
+                btn_modify.setAttribute("id", "btn_" + (rowCount - 1));
+                btn_modify.appendChild(document.createTextNode(_t("remove")));
+                btn_modify.addEventListener("click", function(){
+                    console.log(this.id.substr(4));
+                    // 리스트에서 삭제
+                    var tr = document.getElementById("tr_" + this.id.substr(4));
+                    console.log(tr);
+                    var tr_parent = tr.parentNode;
+                    tr_parent.removeChild(tr);
+                    tr = null;
+                });
+                td.appendChild(btn_modify);    
+            }
+        }
+    }
+    $("#modal_netfilter_add").modal("hide");
+});
 //===========================================================================================
-function init() {
-    
+/*function init() {
+
     document.getElementById("h_firewall").innerHTML = _t('firewall_setting');
     document.getElementById("modify_btn").innerHTML = _t('modify');
     document.getElementById("btn_add").innerHTML = _t('add');
@@ -231,11 +325,46 @@ function onRemoveHost(index)
             table.rows[index].cells[5].firstChild.setAttribute("onclick", "onRemoveHost(" + (index) + ");");
         }
     }
-}
+}*/
 
 function onApply()
 {
-    if(typeof window.ActiveXObject != 'undefined')
+    var param = "/cgi-bin/netfilter?cmd=set";
+    var table = document.getElementById("control_table");
+
+    var rowCount = $('#control_table tr').length;
+
+    for(i = 1 ; i < rowCount; i++)
+    {
+        //console.log(table.rows[i].cells[0].innerHTML);
+        param += '&name' + (i-1) + '=' + "'" + table.rows[i].cells[0].innerHTML + "'";
+        param += '&target' + (i-1) + '=' + "'" + table.rows[i].cells[1].innerHTML + "'";
+        param += '&proto' + (i-1) + '=' + "'" + table.rows[i].cells[3].innerHTML + "'";
+        param += '&port' + (i-1) + '=' + "'" + table.rows[i].cells[4].innerHTML + "'";
+        param += '&match' + (i-1) + '=' + "'" + table.rows[i].cells[5].innerHTML + "'";
+        param += '&policy' + (i-1) + '=' + "'" + table.rows[i].cells[6].innerHTML + "'";
+    }
+    console.log(param);
+    alert(param)
+    /*$.ajax({
+        type:"get",
+        url:"/cgi-bin/netfilter?cmd=set" + param,
+        dataType:"json",
+        success : function(json) {
+            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
+            // TODO
+            console.log(json.result);
+            alert(json.result);
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+        }
+    });*/
+
+
+
+
+    /*if(typeof window.ActiveXObject != 'undefined')
     {
         xmlhttp = (new ActiveXObject("Microsoft.XMLHTTP"));
     }
@@ -286,5 +415,5 @@ function onApply()
             }
         }
     }
-    xmlhttp.send();
+    xmlhttp.send();*/
 }

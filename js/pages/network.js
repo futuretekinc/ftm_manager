@@ -86,6 +86,9 @@ function loadNetworkData() {
                     option2.innerHTML = ports[i].name;
                     option2.setAttribute("value", i);
 
+                    var interface = json.interface;
+                    console.log(activeWan, interface[activeWan], "|||||", ports[i].name);
+
                     if (json.interface[activeWan].port[0] == ports[i].name) {
                         activeWanIdx = i;
                     }

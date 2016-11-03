@@ -1,0 +1,20 @@
+{
+    "modem" : {
+        "info" : {
+            "usim" : "opened",
+                "mdn" : "821222790542",
+                "time" : "20161011165406",
+                "dl_earfcn" : "3050",
+                "rx_power" : "-105",
+                "tx_adjust" : "0",
+                "tx_power" : "215",
+                "pilot_pn_offset" : "0",
+                "ec_lo" : "-2",
+                "system_id" : "65431",
+                "network_id" : "45006",
+                "reg_zone" : "(66,2)",
+                "base_station_id" : "4500621C440C"
+        }
+    },
+        "result" : "success"
+}

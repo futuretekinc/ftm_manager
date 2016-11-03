@@ -6,7 +6,7 @@ function init() {
     document.getElementById("th_port").innerHTML = _t('port');
     document.getElementById("th_ip").innerHTML = _t('ip');
     document.getElementById("th_subnet").innerHTML = _t('subnet');
-    document.getElementById("th_mac").innerHTML = _t('mac');
+    // document.getElementById("th_mac").innerHTML = _t('mac');
 
     document.getElementById("a_default_info").innerHTML = _t('network');
     document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
@@ -26,40 +26,44 @@ $(document).ready(function(){
 });
 
 function usim_socket_status() {
+
+    var url = "";
+    if (isTest) {
+        url = "/json/usim_socket_status.json";
+    } else {
+        url = "/cgi-bin/usim?cmd=usim_socket_status";
+    }
+
     $.ajax({
         type:"get",
-        url:"/cgi-bin/usim?cmd=usim_socket_status",
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("data").each(function(){
-                console.log($(this).find("text").text());
-                result = $(this).find("text").text();
-                if (result == "done" || result == "URC MESSAGE") {
-                    alert('다시 시도해 주십시오..');
-                    return;
-                }
-				
-                if (result == 0) {
-                    // 유심 미장착
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+
+            if (json.result == "success") {
+                if (json.usim.status == "not installed") {
+                    console.log("유심 미장착");
                     alert("USIM이 장착되어있지 않습니다.\nUSIM을 장착하신 후 전원을 껐다 켜주십시오.");
-                    //document.getElementById("usim_status").innerHTML = "SIM NOT INSERT";
                     return;
                 } else {
-                    // 유심장착
-                    usim_different_status();
+                    console.log("유심장착");
+                    //usim_different_status();
+                    usim_cnum();
                 }
-            });
+            } else {
+                alert("Please Retry");
+            }
         },
         error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+            console.log("에러발생");
+            //window.location.href="/";
         }
     });
 }
 
-function usim_different_status(){
+/*function usim_different_status(){
     $.ajax({
         type:"get",
         url:"/cgi-bin/usim?cmd=usim_different_status",
@@ -88,10 +92,11 @@ function usim_different_status(){
             window.location.href="/";
         }
     });
-}
-function usim_open_status(){
+}*/
+
+/*function usim_open_status(){
     $.ajax({
-        type:"get",
+        type7:"get",
         url:"/cgi-bin/usim?cmd=usim_open_status",
         dataType:"xml",
         success : function(xml) {
@@ -118,55 +123,66 @@ function usim_open_status(){
             window.location.href="/";
         }
     });
-}
+}*/
+
+
 function usim_cnum() {
+
+    var url = "";
+    if (isTest) {
+        url = "/json/cnum.json";
+    } else {
+        url = "/cgi-bin/cnum?cmd=get";
+    }
+    
     $.ajax({
         type:"get",
-        url:"/cgi-bin/usim?cmd=cnum",
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("data").each(function(){
-                console.log($(this).find("text").text());
-                result = $(this).find("text").text();
-                if (result == "done" || result == "URC MESSAGE") {
-                    alert('다시 시도해 주십시오..');
-                    return;
-                }
-                var resultArr = result.split(",");
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+
+            if (json.result == "success") {
                 var tbody = document.getElementById("static_body");
                 tr = document.createElement("tr");
                 tbody.appendChild(tr);
                 tr.appendChild(document.createElement("th")).innerHTML = "MSISDN";
-                tr.appendChild(document.createElement("td")).innerHTML = resultArr[1].substring(1, 13);
+                tr.appendChild(document.createElement("td")).innerHTML = json.modem.mdn;
                 is_limited();
-            });
+            } else {
+                alert("Please Retry");
+            }
         },
         error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+            console.log("에러발생");
+            //window.location.href="/";
         }
     });
 }
+
+
 function is_limited() {
+    var url = "";
+    if (isTest) {
+        url = "/json/is_limited.json";
+    } else {
+        url = "/cgi-bin/usim?cmd=is_limited";
+    }
+    
     $.ajax({
         type:"get",
-        url:"/cgi-bin/usim?cmd=is_limited",
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("data").each(function(){
-                console.log($(this).find("text").text());
-                result = $(this).find("text").text();
-                if (result == "done" || result == "URC MESSAGE") {
-                    alert('다시 시도해 주십시오..');
-                    return;
-                }
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+
+            if (json.result == "success") {
+
                 var tbody = document.getElementById("static_body");
-				
-                if (result == "N") {
+                
+                if (json.net.status == "no service") {
                     tr = document.createElement("tr");
                     tbody.appendChild(tr);
                     tr.appendChild(document.createElement("th")).innerHTML = "USIM Status";
@@ -177,17 +193,24 @@ function is_limited() {
                     tbody.appendChild(tr);
                     tr.appendChild(document.createElement("th")).innerHTML = "USIM Status";
                     tr.appendChild(document.createElement("td")).innerHTML = "Ready";
-                    get_pppData();
+                    //get_pppData();
+                    networkState();
                 }
-            });
+                
+            } else {
+                alert("Please Retry");
+            }
         },
         error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+            console.log("에러발생", status, error);
+            networkState();
+            //window.location.href="/";
         }
     });
 }
-function get_pppData() {
+
+
+/*function get_pppData() {
     $.ajax({
         type:"get",
         url:"/cgi-bin/getdata?cmd=state",
@@ -213,141 +236,136 @@ function get_pppData() {
             window.location.href="/";
         }
     });
-}
+}*/
 function networkState() {
-    var keys = ["TIME", "DL EARFCN", "RX Power", "TX Adjust",
-        "TX Power", "Pilot PN Offset", "Ec/lo", "System Identification",
-        "Network Identification", "Registration Zone", "Registration Zone", "Base Station Identification"];
+    var keys = ["usim", "tx_power", "tx_adjust", "time", "system_id", "rx_power", "reg_zone", "pilot_pn_offset", "network_id", "mdn", "ec_lo", "dl_earfcn", "base_station_id"];
+
+    var url = "";
+    if (isTest) {
+        url = "/json/network_state.json";
+    } else {
+        url = "/cgi-bin/network_state?cmd=get";
+    }
 
     $.ajax({
         type:"get",
-        url:"/cgi-bin/network_state?cmd=state",
-        dataType:"xml",
-        success : function(xml) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
-            $(xml).find("data").each(function(){
-                console.log($(this).find("text").text());
-                result = $(this).find("text").text();
-                if (result == "done" || result == "URC MESSAGE") {
-                    alert('다시 시도해 주십시오..');
-                    return;
-                }
-                var tbody = document.createElement("tbody");
-                document.getElementById("info").appendChild(tbody);
-                var textArr = result.split(",");
-                console.log(tbody);
-                for (var i=0; i<textArr.length; i++)
-                {
-                    var rowlen;
-                    var row;
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
 
-                    var key = keys[i];
-                    var value;
-                    var special_value;
+            if (json.result == "success") {
 
-                    if (i < 9) {
-                        value = textArr[i];
-                        console.log(value);
+                $.each(json.modem.info, function(key, value) {
+                    var td = document.getElementById(key);
+                    td.innerHTML = value;
+                });
+                loadpppIP();
 
-                        tr = document.createElement("tr");
-                        tbody.appendChild(tr);
-                        tr.appendChild(document.createElement("th")).innerHTML = key;
-                        tr.appendChild(document.createElement("td")).innerHTML = value;
-
-                    } else if (i == 9)
-                    {
-                        special_value = textArr[i];
-                    } else if (i == 10)
-                    {
-                        special_value += ", " + textArr[i];
-                        console.log(special_value);
-
-                        tr = document.createElement("tr");
-                        tbody.appendChild(tr);
-                        tr.appendChild(document.createElement("th")).innerHTML = key;
-                        tr.appendChild(document.createElement("td")).innerHTML = special_value;
-                    } else {
-                        value = textArr[i];
-                        console.log(value);
-                        tr = document.createElement("tr");
-                        tbody.appendChild(tr);
-                        tr.appendChild(document.createElement("th")).innerHTML = key;
-                        tr.appendChild(document.createElement("td")).innerHTML = value;
-                    }
-                }
-            });
+            } else {
+                alert("Please Retry");
+            }
         },
         error : function(xhr, status, error) {
-            //alert("에러발생");
-            window.location.href="/";
+            console.log("에러발생");
+            //window.location.href="/";
         }
     });
 }
-function loadpppIP() {
 
+function loadpppIP() {
+     var url = "";
+    if (isTest) {
+        url = "/json/pppip.json";
+    } else {
+        url = "/cgi-bin/pppip?cmd=get";
+    }
+
+    $.ajax({
+        type:"get",
+        url:url,
+        dataType:"json",
+        success : function(json) {
+            
+            console.log(json);
+
+            if (json.result == "success") {
+                console.log(json.net.ip);
+                document.getElementById("usb0_port").innerHTML = "usb0";
+                document.getElementById("usb0_ip").innerHTML = json.net.ip;
+                document.getElementById("usb0_subnet").innerHTML = "255.255.255.0";
+            } else {
+                alert("Please Retry");
+            }
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+            //window.location.href="/";
+        }
+    });
 }
 
-function usim_sending_stop_status()
+/*function usim_sending_stop_status()
 {
-	if(typeof window.ActiveXObject != 'undefined')
-	{
-		xmlhttp = (new ActiveXObject("Microsoft.XMLHTTP"));
-	}
-	else
-	{
-		xmlhttp = (new XMLHttpRequest());
-	}
-	
-	var data = "/cgi-bin/usim?cmd=usim_sending_stop_status";
+    if(typeof window.ActiveXObject != 'undefined')
+    {
+        xmlhttp = (new ActiveXObject("Microsoft.XMLHTTP"));
+    }
+    else
+    {
+        xmlhttp = (new XMLHttpRequest());
+    }
+    
+    var data = "/cgi-bin/usim?cmd=usim_sending_stop_status";
 
-	xmlhttp.open( "POST", data, true );
-	xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=euc-kr");
-	xmlhttp.onreadystatechange = function()
-	{
-		if( (xmlhttp.readyState == 4) && (xmlhttp.status == 200) )
-		{
-			try
+    xmlhttp.open( "POST", data, true );
+    xmlhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=euc-kr");
+    xmlhttp.onreadystatechange = function()
+    {
+        if( (xmlhttp.readyState == 4) && (xmlhttp.status == 200) )
+        {
+            try
             {
-            	result = xmlhttp.responseXML.documentElement.getElementsByTagName("res")[0];
-            	if (result.firstChild.nodeValue == 'OK') {
+                result = xmlhttp.responseXML.documentElement.getElementsByTagName("res")[0];
+                if (result.firstChild.nodeValue == 'OK') {
 
-            		// 파싱
-            		var resultNode = xmlhttp.responseXML.documentElement.getElementsByTagName("text")[0];
-					var result = resultNode.firstChild.nodeValue;
+                    // 파싱
+                    var resultNode = xmlhttp.responseXML.documentElement.getElementsByTagName("text")[0];
+                    var result = resultNode.firstChild.nodeValue;
 
-					if (result == "done" || result == "URC MESSAGE")
-					{
-						document.getElementById('message').innerHTML='다시 시도해 주십시오..';
-						return;
-					}
+                    if (result == "done" || result == "URC MESSAGE")
+                    {
+                        document.getElementById('message').innerHTML='다시 시도해 주십시오..';
+                        return;
+                    }
 
-					//result = "Barred";
-					if (result == "OK")
-					{
-						// 정상 서비스 상태
-						document.getElementById("usim_status").innerHTML = "READY";
-					}
-					if (result == "Barred")
-					{
-						// 발신정지 상태
-						alert("단말이 발신정지 상태입니다.\n고객센터에 연락하여 발신정지 해지를 요청하십시오.\n발신정지가 해지되면 단말을 재부팅 해주십시오.");
-						document.getElementById("usim_status").innerHTML = "발신정지";
-						//return;
-					}
+                    //result = "Barred";
+                    if (result == "OK")
+                    {
+                        // 정상 서비스 상태
+                        document.getElementById("usim_status").innerHTML = "READY";
+                    }
+                    if (result == "Barred")
+                    {
+                        // 발신정지 상태
+                        alert("단말이 발신정지 상태입니다.\n고객센터에 연락하여 발신정지 해지를 요청하십시오.\n발신정지가 해지되면 단말을 재부팅 해주십시오.");
+                        document.getElementById("usim_status").innerHTML = "발신정지";
+                        //return;
+                    }
 
-					new_pppData();
+                    new_pppData();
 
-            	} else {
-            		// error
-            		alert("Please Refresh..");
-            	}
+                } else {
+                    // error
+                    alert("Please Refresh..");
+                }
             }
             catch(e)
             {
 
             }
-		}
-	}
-	xmlhttp.send();
-}
+        }
+    }
+    xmlhttp.send();
+}*/

@@ -1,0 +1,21 @@
+{
+    "config": {
+        "enable":"0",
+        "interface":"lan",
+        "static":"0",
+        "start":"192.168.100.20",
+        "end":"192.168.100.254",
+        "lease":"864000",
+        "router":"192.168.100.1",
+        "subnet":"255.255.255.0",
+        "dns":["164.124.107.9" , "203.248.242.2" , "8.8.8.8"],
+        "leases":[{
+            "mac":"f0:de:f1:17:78:a4",
+            "ipaddr":"192.168.100.20  ",
+            "hostname":"LENOVO-PC           ",
+            "expiresin":"9 days 23:48:45"
+        }]
+    },
+
+    "result":"success"
+}

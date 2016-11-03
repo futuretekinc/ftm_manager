@@ -1,0 +1,10 @@
+{
+    "apn" : {
+        "internet" : "m2m-router.lguplus.co.kr",
+        "ims" : "imsv6-m2m.lguplus.co.kr",
+        "ota" : "ota.lguplus.co.kr",
+        "emergency" : "emergency.lguplus.co.kr"
+    },
+  
+    "result" : "success"
+}
