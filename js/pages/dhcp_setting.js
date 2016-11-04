@@ -9,10 +9,10 @@ $(document).ready(function(){
 function init() {
     document.getElementById("h_dhcp_setting").innerHTML = _t('dhcp_setting');       
     document.getElementById("modify_btn").innerHTML = _t('modify');     
-    //document.getElementById("btn_add").innerHTML = _t('add');
+    document.getElementById("btn_add").innerHTML = _t('add');
     document.getElementById("label_enable").innerHTML = _t('enabled');
-    //document.getElementById("label_static_enabled").innerHTML = _t('enabled');
-    //document.getElementById("h_static_setting").innerHTML = _t('static_ip_address');
+    document.getElementById("label_static_enabled").innerHTML = _t('enabled');
+    document.getElementById("h_static_setting").innerHTML = _t('static_ip_address');
 
     
     document.getElementById("label_interface").innerHTML = _t('text_active_interface');
@@ -23,10 +23,10 @@ function init() {
     document.getElementById("label_dns2").innerHTML = _t('dns') + " 2";
     document.getElementById("label_leases").innerHTML = _t('leases_time');
 
-    //document.getElementById("th_number").innerHTML = _t('number');
-    //document.getElementById("th_mac").innerHTML = _t('mac');
-    //document.getElementById("th_ip").innerHTML = _t('ip');
-    //document.getElementById("th_add").innerHTML = _t('add');
+    document.getElementById("th_number").innerHTML = _t('number');
+    document.getElementById("th_mac").innerHTML = _t('mac');
+    document.getElementById("th_ip").innerHTML = _t('ip');
+    document.getElementById("th_add").innerHTML = _t('add');
 
     document.getElementById("a_default_info").innerHTML = _t('network');
     document.getElementById("a_lte_status_info").innerHTML = _t('status_info');
@@ -136,12 +136,13 @@ function onApply()
 	data += "&end=" + document.getElementById("end").value;
 	data += "&router=" + document.getElementById("router").value;
 	data += "&time=" + document.getElementById("time").value;
-	data += "&static=0";// + document.getElementById("static_leases_cb").checked;
+	data += "&static=" + document.getElementById("static_leases_cb").checked;
 	data += "&dns1=" + document.getElementById("dns1").value;
 	data += "&dns2=" + document.getElementById("dns2").value;
-    //console.log(document.getElementById("static_leases_cb").checked);
+    console.log(document.getElementById("static_leases_cb").checked);
+    
     // 고정아이피 설정
-	/*if (typeof(document.getElementsByName("mac")) != 'undefined')
+	if (typeof(document.getElementsByName("mac")) != 'undefined')
 	{
 		if (typeof(document.getElementsByName("mac").length) != 'undefined')
 		{
@@ -157,7 +158,10 @@ function onApply()
 				data += "&mac0=" + document.getElementsByName("mac").value;
 				data += "&ip0=" + document.getElementsByName("ip").value;
 		}			
-	}*/
+	}
+
+    console.log(data);
+    //return;
 
     $.ajax({
         type:"get",
