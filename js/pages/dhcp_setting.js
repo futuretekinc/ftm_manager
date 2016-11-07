@@ -10,7 +10,7 @@ function init() {
     document.getElementById("h_dhcp_setting").innerHTML = _t('dhcp_setting');       
     document.getElementById("modify_btn").innerHTML = _t('modify');     
     document.getElementById("btn_add").innerHTML = _t('add');
-    document.getElementById("label_enable").innerHTML = _t('enabled');
+    // document.getElementById("label_enable").innerHTML = _t('enabled');
     document.getElementById("label_static_enabled").innerHTML = _t('enabled');
     document.getElementById("h_static_setting").innerHTML = _t('static_ip_address');
 
@@ -61,10 +61,16 @@ function init() {
                 document.getElementById("dns1").value = config.dns[0];
                 document.getElementById("dns2").value = config.dns[1];
                 
-                if (config.enable == true) {
-                    document.getElementById("enable").checked = true;
+                // if (config.enable == true) {
+                //     document.getElementById("enable").checked = true;
+                // } else {
+                //     document.getElementById("enable").checked = false;
+                // }
+
+                if (config.static == true) {
+                    document.getElementById("static_leases_cb").checked = true;
                 } else {
-                    document.getElementById("enable").checked = false;
+                    document.getElementById("static_leases_cb").checked = false;
                 }
 
             } else {
@@ -130,7 +136,7 @@ function init() {
 function onApply()
 {
 	var data = "/cgi-bin/dhcp2?cmd=set";
-	data += "&enable=" + document.getElementById("enable").checked;
+	data += "&enable=true"; // + document.getElementById("enable").checked;
 	data += "&if=" + document.getElementById('eth_if').value;
 	data += "&start=" + document.getElementById("start").value;
 	data += "&end=" + document.getElementById("end").value;
@@ -172,7 +178,27 @@ function onApply()
             console.log(json);
             
             if (json.result == "success") {
-                alert("수정완료");
+                
+                $.ajax({
+                    type:"get",
+                    url:"/cgi-bin/dhcp2?cmd=restart",
+                    dataType:"json",
+                    success : function(json) {
+                        
+                        console.log(json);
+                        
+                        if (json.result == "success") {
+                            alert("수정완료");
+                        } else {
+                            alert("Please Retry");
+                        }
+                    },
+                    error : function(xhr, status, error) {
+                        console.log("에러발생");
+                        //window.location.href="/";
+                    }
+                });
+
             } else {
                 alert("Please Retry");
             }

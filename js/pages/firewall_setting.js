@@ -1,7 +1,7 @@
 /**
  * Created by kindmong on 2015-11-05.
  */
-var ths = ["name", "target", "type", "proto", "port", "match", "policy", "delete"];
+var ths = ["name", "target", "type", "proto", "port", "policy", "delete"];
 
 $(document).ready(function(){
     menu();
@@ -337,29 +337,44 @@ function onApply()
     for(i = 1 ; i < rowCount; i++)
     {
         //console.log(table.rows[i].cells[0].innerHTML);
-        param += '&name' + (i-1) + '=' + "'" + table.rows[i].cells[0].innerHTML + "'";
-        param += '&target' + (i-1) + '=' + "'" + table.rows[i].cells[1].innerHTML + "'";
-        param += '&proto' + (i-1) + '=' + "'" + table.rows[i].cells[3].innerHTML + "'";
-        param += '&port' + (i-1) + '=' + "'" + table.rows[i].cells[4].innerHTML + "'";
-        param += '&match' + (i-1) + '=' + "'" + table.rows[i].cells[5].innerHTML + "'";
-        param += '&policy' + (i-1) + '=' + "'" + table.rows[i].cells[6].innerHTML + "'";
+        param += '&name' + (i-1) + '=' + table.rows[i].cells[0].innerHTML;
+        param += '&target' + (i-1) + '=' + table.rows[i].cells[1].innerHTML;
+        param += '&proto' + (i-1) + '=' + table.rows[i].cells[3].innerHTML;
+        param += '&port' + (i-1) + '=' + table.rows[i].cells[4].innerHTML;
+        //param += '&match' + (i-1) + '=' + "'" + table.rows[i].cells[5].innerHTML + "'";
+        param += '&policy' + (i-1) + '=' + table.rows[i].cells[5].innerHTML;
     }
     console.log(param);
-    alert(param)
-    /*$.ajax({
+    //alert(param)
+    $.ajax({
         type:"get",
-        url:"/cgi-bin/netfilter?cmd=set" + param,
+        url:param,
         dataType:"json",
         success : function(json) {
-            // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
-            // TODO
+            
             console.log(json.result);
-            alert(json.result);
+            if (json.result == "success") {
+
+                // iptable 재실행
+                $.ajax({
+                    type:"get",
+                    url:"/cgi-bin/netfilter?cmd=restart",
+                    dataType:"json",
+                    success : function(json) {
+                        console.log(json.result);
+                        alert(json.result);
+                    },
+                    error : function(xhr, status, error) {
+                        console.log("에러발생");
+                    }
+                });
+            }
+            //alert(json.result);
         },
         error : function(xhr, status, error) {
             console.log("에러발생");
         }
-    });*/
+    });
 
 
 
