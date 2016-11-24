@@ -9,6 +9,8 @@ function init() {
     document.getElementById("menu_network").innerHTML = _t('network');
     document.getElementById("menu_system").innerHTML = _t('system');
 	document.getElementById("modify_btn").innerHTML = _t('modify');
+
+	document.getElementById("a_default_info").innerHTML = _t('network');
 }
 
 $(document).ready(function(){

@@ -1,6 +1,23 @@
 var	msgInvalidIDorPasswd=0;
 var msg;
 
+$(document).ready(function(){
+	$.ajax({
+        type:"get",
+        url:"/cgi-bin/system?cmd=profile",
+        dataType:"xml",
+        contentType:"text/xml",
+        success : function(xml) {
+            $(xml).find("PROFILE").each(function(){
+                document.getElementById("model").innerHTML = $(this).find("MODEL").text();
+            });
+        },
+        error : function(xhr, status, error) {
+            console.log("에러발생");
+        }
+    });
+});
+
 function onInit()
 {
 	msg = new Array();
@@ -16,7 +33,7 @@ function onLoad()
 
 	deleteCookie('ssid');
 	document.getElementById('body').hidden = false;
-	//onResize();	
+	//onResize();
 /*
 	if(typeof window.ActiveXObject != 'undefined')
 	{

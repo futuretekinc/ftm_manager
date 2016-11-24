@@ -122,7 +122,7 @@ function active_ip(leases) {
     if (isTest) {
         url = "/json/active_ip.xml";
     } else {
-        url = "/cgi-bin/dhcp?cmd=status";
+        url = "/cgi-bin/dhcp?cmd=real_status";
     }
 
     $.ajax({
@@ -142,7 +142,7 @@ function active_ip(leases) {
                 }
 
                 ips = arr.reduce(function(a,b){if(a.indexOf(b)<0)a.push(b);return a;},[]);
-                ips = ["(192.168.100.20)"]; //임시
+                //ips = ["(192.168.100.20)"]; //임시
 
                 list_count=0;
                 for(j = 0 ; j < ips.length ; j++)

@@ -81,7 +81,8 @@ function onApplyChangePasswd()
                 if (ret[0].firstChild.nodeValue == "OK")
                 {
                     alert(msg[msgPasswodChanged]);
-                    profile_logout();
+                    //profile_logout();
+                    window.location.href="/";
                 }
                 if (ret[0].firstChild.nodeValue == "ERROR")
                 {

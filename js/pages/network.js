@@ -40,13 +40,13 @@ $(document).ready(function(){
 function loadNetworkData() {
     $.ajax({
         type:"get",
-        //url:"/test_network_info.json",
-        url:"/cgi-bin/network?cmd=get",
+        url:"/test_network_info.json",
+        //url:"/cgi-bin/network?cmd=get",
         dataType:"json",
         success : function(_json) {
             // 통신이 성공적으로 이루어졌을 때 이 함수를 타게 된다.
             // TODO
-            //console.log(json);
+            console.log(json);
 
             var json = _json.network;
             var ports = json.port;

@@ -11,5 +11,5 @@ function menu() {
 }
 
 function logout() {
-	alert("logout");
+	window.location.href="/";
 }
